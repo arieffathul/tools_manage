@@ -11,7 +11,7 @@ class UpdateEngineerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateEngineerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'shift' => 'required|string|max:100',
+            'status' => 'required|string|max:100',
+            'inactived_at' => 'nullable|date',
         ];
     }
 }

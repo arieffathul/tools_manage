@@ -11,7 +11,7 @@ class StoreToolRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class StoreToolRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'code' => 'required|string|max:100|unique:tools,code',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'spec' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'quantity' => 'required|integer|min:0',
+            'locator' => 'nullable|string|max:255',
         ];
     }
 }

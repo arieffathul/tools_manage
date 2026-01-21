@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Engineer\StoreEngineerRequest;
+use App\Models\Engineer;
 use Illuminate\Http\Request;
 
 class EngineerController extends Controller
@@ -12,7 +14,9 @@ class EngineerController extends Controller
      */
     public function index()
     {
-        //
+        $engineers = Engineer::all();
+
+        return view('master.engineer.index', compact('engineers'));
     }
 
     /**
@@ -26,9 +30,23 @@ class EngineerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreEngineerRequest $request)
     {
-        //
+        try {
+            $data = $request->validated();
+
+            $engineer = new Engineer;
+            $engineer->name = $data['name'];
+            $engineer->shift = $data['shift'];
+            $engineer->status = $data['status'];
+            $engineer->inactivated_at = $data['inactivated_at'];
+
+            $engineer->save();
+
+            return redirect()->route('master.engineer.index')->with('success', 'Engineer berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -36,7 +54,11 @@ class EngineerController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // $response = $this->default_response;
+        // try{
+
+        // }
+
     }
 
     /**
