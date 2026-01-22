@@ -29,6 +29,9 @@ class StoreToolRequest extends FormRequest
             'image' => 'nullable|image|max:2048',
             'quantity' => 'required|integer|min:0',
             'locator' => 'nullable|string|max:255',
+            'current_quantity' => 'required|integer',
+            'current_locator' => 'required|string|max:255',
+            'last_audited_at' => 'nullable|date',
         ];
     }
 }

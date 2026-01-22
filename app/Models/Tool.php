@@ -21,6 +21,5 @@ class Tool extends Model
         'current_quantity',
         'current_locator',
         'last_audited_at',
-        'deleted_at'
     ];
 }

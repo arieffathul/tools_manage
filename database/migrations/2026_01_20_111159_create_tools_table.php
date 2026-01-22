@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('current_locator');
             $table->integer('current_quantity')->default(1);
             $table->timestamp('last_audited_at')->nullable();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
