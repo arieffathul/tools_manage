@@ -81,7 +81,7 @@
 
 
 
-@push('scripts')
+{{-- @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Foto profil preview
@@ -110,4 +110,4 @@
             }
         });
     </script>
-@endpush
+@endpush --}}
