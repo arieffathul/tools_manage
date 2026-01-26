@@ -97,9 +97,9 @@ class EngineerController extends Controller
 
                 $engineer->save();
 
-                return redirect()->route('master.engineer.engineer')->with('success', 'Engineer berhasil diupdate.');
+                return redirect()->route('engineer.engineer')->with('success', 'Engineer berhasil diupdate.');
             } else {
-                return redirect()->route('master.engineer.engineer')->with('error', 'Engineer tidak ditemukan.');
+                return redirect()->route('engineer.engineer')->with('error', 'Engineer tidak ditemukan.');
             }
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
