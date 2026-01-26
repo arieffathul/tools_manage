@@ -15,9 +15,15 @@ class EngineerController extends Controller
      */
     public function index()
     {
-        $engineers = Engineer::all();
+        // Check if we're viewing inactive engineers
+        $viewInactive = request('status') == 'inactive';
 
-        return view('master.engineer.engineer', compact('engineers'));
+        // Get engineers based on toggle
+        $engineers = $viewInactive
+            ? Engineer::where('status', 'inactive')->get()
+            : Engineer::where('status', 'active')->get();
+
+        return view('master.engineer.engineer', compact('engineers', 'viewInactive'));
     }
 
     /**
@@ -88,7 +94,7 @@ class EngineerController extends Controller
         try {
             $data = $request->validated();
 
-            $engineer = Engineer::whereId($id);
+            $engineer = Engineer::findOrFail($id);
             if ($engineer) {
                 $engineer->name = $data['name'];
                 $engineer->shift = $data['shift'];
@@ -117,6 +123,18 @@ class EngineerController extends Controller
         ]);
 
         return back()->with('success', 'Engineer dinonaktifkan.');
+    }
+
+    public function activate(string $id)
+    {
+        $engineer = Engineer::findOrFail($id);
+
+        $engineer->update([
+            'status' => 'active',
+            'inactived_at' => null,
+        ]);
+
+        return back()->with('success', 'Engineer diaktifkan kembali.');
     }
 
     /**

@@ -1,5 +1,7 @@
 @extends('layouts.app')
-@php $currentPage = 'engineers'; @endphp
+@php
+    $currentPage = 'engineers';
+@endphp
 
 @section('title', 'Engineer | Tools Management')
 @section('content')
@@ -9,6 +11,20 @@
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-between mb-3 g-2">
                     <div class="col-auto d-flex flex-wrap align-items-end gap-3">
+                        {{-- Simple Toggle Button --}}
+                        <div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{{ route('engineer.index') }}"
+                                    class="btn {{ !$viewInactive ? 'btn-success' : 'btn-outline-success' }}">
+                                    Active
+                                </a>
+                                <a href="{{ route('engineer.index', ['status' => 'inactive']) }}"
+                                    class="btn {{ $viewInactive ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                                    Inactive
+                                </a>
+                            </div>
+                        </div>
+
                         {{-- Filter Shift --}}
                         <div>
                             <label class="form-label mb-1 small">Shift</label>
@@ -22,10 +38,13 @@
                         {{-- Search Engineer --}}
                         <div>
                             <label class="form-label mb-1 small">Cari Engineer</label>
-                            <form action="#" method="GET" id="searchForm">
+                            <form action="{{ route('engineer.index') }}" method="GET" id="searchForm">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" name="search" placeholder="Nama Engineer"
                                         id="searchEngineer" value="{{ request('search') }}">
+                                    @if ($viewInactive)
+                                        <input type="hidden" name="status" value="inactive">
+                                    @endif
                                     <button class="btn btn-success" type="submit">
                                         <i class="bi bi-search"></i>
                                     </button>
@@ -46,7 +65,7 @@
                         @if ($engineers->isEmpty())
                             <div class="d-flex align-items-center justify-content-center" style="min-height: 55vh">
                                 <div class="text-center text-muted">
-                                    <h4>Tidak Ada Data Engineer</h4>
+                                    <h4>Tidak Ada Data Engineer {{ $viewInactive ? 'Inactive' : 'Active' }}</h4>
                                 </div>
                             </div>
                         @else
@@ -82,22 +101,46 @@
                                                         data-bs-target="#editEngineerModal{{ $engineer->id }}">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
-                                                    <!-- Inactive -->
-                                                    <form action="{{ route('engineer.inactive', $engineer->id) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button class="btn btn-sm btn-link text-warning">
-                                                            <i class="bi bi-person-x-fill"></i>
-                                                        </button>
-                                                    </form>
 
+                                                    {{-- Show different actions based on status --}}
+                                                    @if ($engineer->status === 'active')
+                                                        <!-- Inactive Button -->
+                                                        <form action="{{ route('engineer.inactive', $engineer->id) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button class="btn btn-sm btn-link text-warning">
+                                                                <i class="bi bi-person-x-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                    @else
+                                                        <!-- Activate Button -->
+                                                        <form action="{{ route('engineer.activate', $engineer->id) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button class="btn btn-sm btn-link text-success">
+                                                                <i class="bi bi-person-check-fill"></i>
+                                                            </button>
+                                                        </form>
+
+                                                        <!-- Delete Button -->
+                                                        <form action="{{ route('engineer.destroy', $engineer->id) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus engineer ini?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-sm btn-link text-danger">
+                                                                <i class="bi bi-trash-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </td>
                                             </tr>
 
                                             {{-- Modal Edit Engineer --}}
-                                            <div class="modal fade" id="editEngineerModal{{ $engineer->id }}" tabindex="-1"
-                                                aria-labelledby="modalEditEngineerLabel{{ $engineer->id }}"
+                                            <div class="modal fade" id="editEngineerModal{{ $engineer->id }}"
+                                                tabindex="-1" aria-labelledby="modalEditEngineerLabel{{ $engineer->id }}"
                                                 aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                                     <div class="modal-content">
@@ -155,17 +198,6 @@
                                                                         </option>
                                                                     </select>
                                                                 </div>
-
-                                                                {{-- Inactivated At
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">Tanggal Nonaktif</label>
-                                                                    <input type="date" class="form-control"
-                                                                        name="inactived_at"
-                                                                        value="{{ optional($engineer->inactived_at)->format('Y-m-d') }}">
-                                                                    <small class="text-muted">
-                                                                        Kosongkan jika masih aktif
-                                                                    </small>
-                                                                </div> --}}
 
                                                             </div>
 
@@ -268,27 +300,5 @@
         }
         searchInput.addEventListener('input', filterTable);
         shiftFilter.addEventListener('change', filterTable);
-
-        // document.getElementById('shiftFilter').addEventListener('change', function() {
-        //     const selectedShift = this.value.toLowerCase();
-        //     const tableBody = document.getElementById('engineerTableBody');
-        //     const rows = tableBody.getElementsByTagName('tr');
-        //     let hasVisibleRow = false;
-
-        //     for (let i = 0; i < rows.length; i++) {
-        //         const shiftCell = rows[i].getElementsByTagName('td')[2];
-        //         if (shiftCell) {
-        //             const shiftText = shiftCell.textContent || shiftCell.innerText;
-        //             if (selectedShift === '' || shiftText.toLowerCase() === selectedShift) {
-        //                 rows[i].style.display = '';
-        //                 hasVisibleRow = true;
-        //             } else {
-        //                 rows[i].style.display = 'none';
-        //             }
-        //         }
-        //     }
-
-        //     document.getElementById('noResultRow').style.display = hasVisibleRow ? 'none' : '';
-        // });
     </script>
 @endsection

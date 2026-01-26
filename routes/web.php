@@ -18,6 +18,8 @@ Route::middleware('admin')->group(function () {
     Route::get('master/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::resource('engineer', EngineerController::class);
     Route::patch('engineer/{id}/inactive', [EngineerController::class, 'inactive'])->name('engineer.inactive');
+    Route::patch('/engineer/{id}/activate', [EngineerController::class, 'activate'])
+        ->name('engineer.activate');
 });
 // Route::middleware('admin')->group(function () {
 //     Route::get('/dashboard', 'Dashboard')->name('dashboard');
