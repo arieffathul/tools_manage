@@ -21,7 +21,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ '#' }}" class="nav-link {{ $currentPage === 'engineers' ? 'active' : '' }}">
+                    <a href="{{ route('engineer.index') }}"
+                        class="nav-link {{ $currentPage === 'engineers' ? 'active' : '' }}">
                         <i class="nav-icon bi bi-person-badge-fill"></i>
                         <p>Engineer</p>
                     </a>

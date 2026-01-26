@@ -17,7 +17,7 @@ class EngineerController extends Controller
     {
         $engineers = Engineer::all();
 
-        return view('master.engineer.index', compact('engineers'));
+        return view('master.engineer.engineer', compact('engineers'));
     }
 
     /**
@@ -34,17 +34,18 @@ class EngineerController extends Controller
     public function store(StoreEngineerRequest $request)
     {
         try {
-            $data = $request->validated();
+            // $data = $request->validated();
 
-            $engineer = new Engineer;
-            $engineer->name = $data['name'];
-            $engineer->shift = $data['shift'];
-            $engineer->status = $data['status'];
-            $engineer->inactivated_at = $data['inactivated_at'];
+            // $engineer = new Engineer;
+            // $engineer->name = $data['name'];
+            // $engineer->shift = $data['shift'];
+            // // $engineer->status = $data['status'];
+            // $engineer->inactivated_at = $data['inactivated_at'];
 
-            $engineer->save();
+            // $engineer->save();
+            Engineer::create($request->validated());
 
-            return redirect()->route('master.engineer.index')->with('success', 'Engineer berhasil ditambahkan.');
+            return redirect()->route('master.engineer.engineer')->with('success', 'Engineer berhasil ditambahkan.');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -57,9 +58,9 @@ class EngineerController extends Controller
     {
         $response = $this->default_response;
         try {
-            $engineer = Engineer::find($id);
-            $response['success'] = true;
-            $response['data'] = ['engineer' => $engineer];
+            $engineer = Engineer::findOrFail($id);
+
+            return response()->json($engineer);
         } catch (Exception $e) {
             $response['message'] = $e->getMessage();
         }
@@ -75,7 +76,7 @@ class EngineerController extends Controller
     {
         $engineer = Engineer::findOrFail($id);
 
-        return view('master.engineer.edit', compact('engineers'));
+        return view('master.engineer.edit', compact('engineer'));
 
     }
 
@@ -87,23 +88,35 @@ class EngineerController extends Controller
         try {
             $data = $request->validated();
 
-            $engineer = Engineer::where('id', $id)->first();
+            $engineer = Engineer::whereId($id);
             if ($engineer) {
                 $engineer->name = $data['name'];
                 $engineer->shift = $data['shift'];
                 $engineer->status = $data['status'];
-                $engineer->inactivated_at = $data['inactivated_at'];
+                // $engineer->inactivated_at = $data['inactivated_at'];
 
                 $engineer->save();
 
-                return redirect()->route('master.engineer.index')->with('success', 'Engineer berhasil diupdate.');
+                return redirect()->route('master.engineer.engineer')->with('success', 'Engineer berhasil diupdate.');
             } else {
-                return redirect()->route('master.engineer.index')->with('error', 'Engineer tidak ditemukan.');
+                return redirect()->route('master.engineer.engineer')->with('error', 'Engineer tidak ditemukan.');
             }
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
             // throw $th;
         }
+    }
+
+    public function inactive(string $id)
+    {
+        $engineer = Engineer::findOrFail($id);
+
+        $engineer->update([
+            'status' => 'inactive',
+            'inactived_at' => now(),
+        ]);
+
+        return back()->with('success', 'Engineer dinonaktifkan.');
     }
 
     /**
@@ -113,7 +126,7 @@ class EngineerController extends Controller
     {
         $response = $this->default_response;
         try {
-            $engineer = Engineer::find($id);
+            $engineer = Engineer::find($id, 'id');
             if ($engineer) {
                 $engineer->delete();
                 $response['success'] = true;

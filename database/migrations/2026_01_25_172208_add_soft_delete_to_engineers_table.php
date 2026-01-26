@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('engineers', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('shift');
-            $table->string('status')->default('active');
-            $table->timestamp('inactived_at')->nullable();
-            $table->timestamps();
+        Schema::table('engineers', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('engineers');
+        Schema::table('engineers', function (Blueprint $table) {
+            //
+        });
     }
 };

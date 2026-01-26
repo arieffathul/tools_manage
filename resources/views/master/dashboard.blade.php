@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @php $currentPage = 'dashboard'; @endphp
 
-@section('title', 'Dashboard Admin')
+@section('title', 'Dashboard | Tools Management')
 @section('content')
     <main class="app-main">
         <!-- Header -->

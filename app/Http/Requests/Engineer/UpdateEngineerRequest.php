@@ -24,7 +24,7 @@ class UpdateEngineerRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'shift' => 'required|string|max:100',
-            'status' => 'required|string|max:100',
+            'status' => 'nullable|string|max:100',
             'inactived_at' => 'nullable|date',
         ];
     }

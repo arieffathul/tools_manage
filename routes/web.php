@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Master\EngineerController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
@@ -13,8 +14,10 @@ Route::get('/login', [LoginController::class,  'show'])->name('login.show');
 Route::post('/login', [LoginController::class,  'login'])->name('login');
 Route::post('/logout', [LoginController::class,  'logout'])->name('logout');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+Route::middleware('admin')->group(function () {
+    Route::get('master/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('engineer', EngineerController::class);
+    Route::patch('engineer/{id}/inactive', [EngineerController::class, 'inactive'])->name('engineer.inactive');
 });
 // Route::middleware('admin')->group(function () {
 //     Route::get('/dashboard', 'Dashboard')->name('dashboard');
