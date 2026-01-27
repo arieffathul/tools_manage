@@ -20,6 +20,7 @@ Route::middleware('admin')->group(function () {
     Route::patch('engineer/{id}/inactive', [EngineerController::class, 'inactive'])->name('engineer.inactive');
     Route::patch('/engineer/{id}/activate', [EngineerController::class, 'activate'])
         ->name('engineer.activate');
+    Route::resource('tool', App\Http\Controllers\Master\ToolController::class);
 });
 // Route::middleware('admin')->group(function () {
 //     Route::get('/dashboard', 'Dashboard')->name('dashboard');

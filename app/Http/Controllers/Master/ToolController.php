@@ -18,7 +18,7 @@ class ToolController extends Controller
     {
         $tools = Tool::all();
 
-        return view('master.tool.index', compact('tools'));
+        return view('master.tool.tools', compact('tools'));
 
     }
 
@@ -38,41 +38,22 @@ class ToolController extends Controller
         try {
             $data = $request->validated();
 
-            // $tool = new Tool;
-            // $tool->code = $data['code'];
-            // $tool->name = $data['name'];
-            // $tool->description = $data['description'];
-            // $tool->spec = $data['spec'];
-            // $tool->quantity = $data['quantity'];
-            // $tool->locator = $data['locator'];
-            // $tool->current_quantity = $data['current_quantity'];
-            // $tool->current_locator = $data['current_locator'];
-            // $tool->last_audited_at = $data['last_audited_at'];
-            // if ($request->hasFile('image')) {
-            //     $file = $request->file('image');
-            //     $filename = time().'_'.$file->getClientOriginalName();
-            //     // $file->storeAs('public/tool', $filename);
-            //     Storage::disk('public')->putFileAs('tool', $file, $filename);
-
-            //     // dd($path);
-            //     $tool->image = $filename;
-            // }
-
-            // $tool->save();
-
-            // return redirect()->route('master.tool.index')->with('success', 'tool berhasil ditambahkan.');
-            $data = $request->validated();
+            // Auto-fill current_quantity and current_locator
+            $data['current_quantity'] = $data['quantity'];
+            $data['current_locator'] = $data['locator'];
 
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')
                     ->store('tool', 'public');
             }
-
+            // Debug: Check before creating
+            // dd($data);
             Tool::create($data);
 
             return redirect()
                 ->route('master.tool.index')
                 ->with('success', 'Tool berhasil ditambahkan');
+
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -117,29 +98,10 @@ class ToolController extends Controller
 
             $tool = Tool::where('id', $id)->first();
             if ($tool) {
-                // $tool->code = $data['code'];
-                // $tool->name = $data['name'];
-                // $tool->description = $data['description'];
-                // $tool->spec = $data['spec'];
-                // $tool->quantity = $data['quantity'];
-                // $tool->locator = $data['locator'];
-                // $tool->current_quantity = $data['current_quantity'];
-                // $tool->current_locator = $data['current_locator'];
-                // $tool->last_audited_at = $data['last_audited_at'];
-                // if ($request->hasFile('image')) {
-                //     $file = $request->file('image');
-                //     $filename = time().'_'.$file->getClientOriginalName();
-                //     // $file->storeAs('public/tool', $filename);
-                //     Storage::disk('public')->putFileAs('tool', $file, $filename);
-
-                //     // dd($path);
-                //     $tool->image = $filename;
-                // }
-
-                // $tool->save();
-
-                // return redirect()->route('master.tool.index')->with('success', 'Engineer berhasil diupdate.');
                 $data = $request->validated();
+
+                $data['current_quantity'] = $data['quantity'];
+                $data['current_locator'] = $data['locator'];
 
                 if ($request->hasFile('image')) {
                     if ($tool->image) {
@@ -194,7 +156,7 @@ class ToolController extends Controller
         }
 
         // return response()->json($response);
-        return redirect()->route('admin.tool.index')->with('success', 'tool berhasil dihapus.');
+        // return redirect()->route('admin.tool.index')->with('success', 'tool berhasil dihapus.');
 
     }
 }

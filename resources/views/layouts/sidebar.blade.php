@@ -31,7 +31,7 @@
 
                 <li class="nav-item">
                     {{-- <a href="{{ route('admin.request.index') }}" --}}
-                    <a href="{{ '#' }}" class="nav-link {{ $currentPage === 'tools' ? 'active' : '' }}">
+                    <a href="{{ route('tool.index') }}" class="nav-link {{ $currentPage === 'tools' ? 'active' : '' }}">
                         <i class="nav-icon bi bi-nut-fill"></i>
                         <p>Tools</p>
                     </a>
