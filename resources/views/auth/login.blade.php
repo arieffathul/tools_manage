@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Booking Ruangan</title>
+    <title>Login | Tools Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -13,7 +13,7 @@
 </head>
 
 <body
-    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 relative overflow-hidden">
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 relative overflow-y-auto">
 
     {{-- Background Blur Decoration --}}
     <div class="absolute inset-0 pointer-events-none">
@@ -30,11 +30,11 @@
 
         {{-- Logo & Header --}}
         <div class="text-center mb-6">
-            <div
+           <div
                 class="mx-auto w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
-                <i class="bi bi-door-open text-3xl text-white"></i>
+                <i class="bi bi-tools text-3xl text-white"></i>
             </div>
-            <h1 class="text-3xl font-bold text-gray-800 mt-4">Booking Ruangan</h1>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Tools Management</h1>
             <p class="text-gray-500">Sign in to your account</p>
         </div>
 
@@ -57,16 +57,16 @@
 
             {{-- Email --}}
             <div>
-                <label for="email" class="block mb-1 text-sm font-medium text-gray-700">Email Address</label>
+                <label for="name" class="block mb-1 text-sm font-medium text-gray-700">Username</label>
                 <div class="relative">
-                    <input type="email" name="email" id="email" placeholder="Enter your email"
-                        value="{{ old('email') }}" required
-                        class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-500 @enderror">
+                    <input type="text" name="name" id="name" placeholder="Enter your username"
+                        value="{{ old('name') }}" required
+                        class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-500 @enderror">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                         <i class="bi bi-person"></i>
                     </div>
                 </div>
-                @error('email')
+                @error('name')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

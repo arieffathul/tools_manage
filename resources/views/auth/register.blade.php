@@ -10,7 +10,7 @@
 </head>
 
 <body
-    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 relative overflow-hidden">
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 relative overflow-y-auto">
 
     {{-- Background Decoration --}}
     <div class="absolute inset-0 pointer-events-none">
@@ -23,15 +23,15 @@
     </div>
 
     <div
-        class="w-full max-w-[400px] bg-white/30 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl p-8 z-10">
+        class="w-full max-w-[500px] m-5 bg-white/30 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl p-8 z-10">
 
         {{-- Logo & Header --}}
         <div class="text-center mb-6">
             <div
                 class="mx-auto w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
-                <i class="bi bi-door-open text-3xl text-white"></i>
+                <i class="bi bi-tools text-3xl text-white"></i>
             </div>
-            <h1 class="text-3xl font-bold text-gray-800 mt-4">Booking Ruangan</h1>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Tools Management</h1>
             <p class="text-gray-500">Create your account</p>
         </div>
 
@@ -109,11 +109,6 @@
             </div>
 
             {{-- Terms & Submit --}}
-            <div class="flex items-center gap-2">
-                <input type="checkbox" id="agree" required class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                <label for="agree" class="text-sm text-gray-700">I agree to the <a href="#"
-                        class="text-blue-600 hover:underline">terms</a></label>
-            </div>
 
             <button type="submit"
                 class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition">

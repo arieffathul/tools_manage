@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-
     public function show()
     {
         return view('auth.login');
@@ -17,7 +16,7 @@ class LoginController extends Controller
     public function login(Request $req)
     {
         $creds = $req->validate([
-            'email'    => 'required|email',
+            'name' => 'required|string',
             'password' => 'required',
         ]);
 
@@ -25,25 +24,26 @@ class LoginController extends Controller
             // Ambil user yang sudah login
             $user = Auth::user();
 
-            // Simpan email user ke session
-            $req->session()->put('user_email', $user->email);
+            $req->session()->put('user_name', $user->name);
 
             // Catat aktivitas login
-            activity()
-                ->causedBy($user)
-                ->event('login')
-                ->log('Pengguna ' . $user->name . ' melakukan Login');
+            // activity()
+            //     ->causedBy($user)
+            //     ->event('login')
+            //     ->log('Pengguna '.$user->name.' melakukan Login');
 
             return redirect()->intended(route('dashboard'));
         }
 
-        return back()->withErrors(['email' => 'Login gagal.']);
+        return back()
+            ->withErrors(['name' => 'Username atau password salah'])
+            ->onlyInput('name');
     }
 
     public function logout()
     {
         Auth::logout();
+
         return redirect()->route('login.show');
     }
-
 }
