@@ -77,37 +77,3 @@
 
 <!-- Spacer untuk hindari overlap konten -->
 <div class="pt-5"></div>
-
-
-
-
-{{-- @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Foto profil preview
-
-
-            // Logout SweetAlert
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: 'Yakin ingin keluar?',
-                        text: "Kamu akan keluar dari dashboard ini.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, logout!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.getElementById('logout-form').submit();
-                        }
-                    });
-                });
-            }
-        });
-    </script>
-@endpush --}}

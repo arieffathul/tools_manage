@@ -1,19 +1,12 @@
 @extends('layouts.app')
 @php $currentPage = 'tools'; @endphp
-@section('title', 'Kelola Tools')
+@section('title', 'Tools | Tools Management')
 @section('content')
     <main class="app-main">
         <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
-                {{-- Header --}}
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h1 class="h3 mb-2">Kelola Tools</h1>
-                        <p class="text-muted mb-0">Manajemen alat dan peralatan</p>
-                    </div>
-                </div>
-
                 <div class="row align-items-center justify-content-between mb-3 g-2">
+                    <h1>Kelola Tools</h1>
                     <div class="col-auto d-flex flex-wrap align-items-end gap-3">
                         {{-- Search --}}
                         <div>
@@ -21,7 +14,7 @@
                             <form action="{{ route('tool.index') }}" method="GET" id="searchForm">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" name="search"
-                                        placeholder="Cari berdasarkan nama atau kode" id="searchTool"
+                                        placeholder="Masukkan nama, kode, atau desc tool" id="searchTool"
                                         value="{{ request('search') }}">
                                     <button class="btn btn-success" type="submit">
                                         <i class="bi bi-search"></i>
@@ -30,7 +23,6 @@
                             </form>
                         </div>
                     </div>
-
                     {{-- Tombol Tambah --}}
                     <div class="col-auto">
                         <button type="button" class="btn btn-success d-flex align-items-center gap-2"
@@ -39,7 +31,6 @@
                         </button>
                     </div>
                 </div>
-
                 <div class="card shadow-sm mt-4">
                     <div class="card-body">
                         @if ($tools->isEmpty())
@@ -406,15 +397,12 @@
             @endforeach
         });
 
-        // Filter Tools
         const searchInput = document.getElementById('searchTool');
-        const locatorFilter = document.getElementById('locatorFilter');
         const tableRows = document.querySelectorAll('#toolTableBody tr');
         const noResultRow = document.getElementById('noResultRow');
 
         function filterTools() {
             const searchValue = searchInput.value.toLowerCase();
-            const selectedLocator = locatorFilter.value;
             let visibleCount = 0;
 
             tableRows.forEach(row => {
@@ -422,19 +410,19 @@
 
                 const nama = row.cells[3].textContent.toLowerCase();
                 const kode = row.cells[2].textContent.toLowerCase();
-                const matchSearch = nama.includes(searchValue) || kode.includes(searchValue);
-                const matchLocator = !selectedLocator || row.dataset.locator == selectedLocator;
-                const isVisible = matchSearch && matchLocator;
+                const desc = row.cells[4].textContent.toLowerCase();
 
-                row.style.display = isVisible ? '' : 'none';
-                if (isVisible) visibleCount++;
+                const matchSearch = nama.includes(searchValue) || kode.includes(searchValue) || desc.includes(
+                    searchValue);
+
+                row.style.display = matchSearch ? '' : 'none';
+                if (matchSearch) visibleCount++;
             });
 
             noResultRow.style.display = visibleCount === 0 ? '' : 'none';
         }
 
         searchInput.addEventListener('input', filterTools);
-        locatorFilter.addEventListener('change', filterTools);
         document.getElementById('searchForm').addEventListener('submit', e => {
             e.preventDefault();
             filterTools();

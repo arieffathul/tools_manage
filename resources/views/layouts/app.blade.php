@@ -77,7 +77,7 @@
 </style>
 <!--begin::Body-->
 
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary sidebar-open">
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
         @include('layouts.header')
