@@ -10,6 +10,7 @@
         <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-between mb-3 g-2">
+                    <h1>Kelola Engineer</h1>
                     <div class="col-auto d-flex flex-wrap align-items-end gap-3">
                         {{-- Simple Toggle Button --}}
                         <div>

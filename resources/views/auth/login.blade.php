@@ -26,7 +26,7 @@
     </div>
 
     <div
-        class="w-full max-w-[400px] bg-white/30 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl p-8 z-10">
+        class="w-full max-w-[500px] bg-white/30 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl p-8 z-10">
 
         {{-- Logo & Header --}}
         <div class="text-center mb-6">
@@ -103,11 +103,10 @@
                 Sign In
             </button>
         </form>
-
-        <p class="text-center text-sm text-gray-600 mt-4">
+        {{-- <p class="text-center text-sm text-gray-600 mt-4">
             Don't have an account?
             <a href="{{ route('register.show') }}" class="text-blue-600 hover:underline">Register here!</a>
-        </p>
+        </p> --}}
     </div>
 
     <script>
