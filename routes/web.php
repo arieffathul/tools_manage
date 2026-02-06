@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Form\BorrowController;
 use App\Http\Controllers\Master\EngineerController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,5 @@ Route::middleware('admin')->group(function () {
         ->name('engineer.activate');
     Route::resource('tool', App\Http\Controllers\Master\ToolController::class);
 });
+
+Route::get('form/borrow', [BorrowController::class, 'form'])->name('borrow.form');

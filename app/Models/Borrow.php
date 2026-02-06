@@ -6,26 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Tool extends Model
+class Borrow extends Model
 {
     use HasFactory, SoftDeletes;
-
     protected $fillable = [
-        'code',
-        'name',
-        'description',
-        'spec',
+        'engineer_id',
+        'job_reference',
+        'is_completed',
         'image',
-        'quantity',
-        'locator',
-        'current_quantity',
-        'current_locator',
-        'last_audited_at',
     ];
+    public function engineer()
+    {
+        return $this->belongsTo(Engineer::class);
+    }
 
     public function borrowDetails()
     {
         return $this->hasMany(BorrowDetail::class);
     }
-
 }

@@ -40,18 +40,10 @@ class EngineerController extends Controller
     public function store(StoreEngineerRequest $request)
     {
         try {
-            // $data = $request->validated();
 
-            // $engineer = new Engineer;
-            // $engineer->name = $data['name'];
-            // $engineer->shift = $data['shift'];
-            // // $engineer->status = $data['status'];
-            // $engineer->inactivated_at = $data['inactivated_at'];
-
-            // $engineer->save();
             Engineer::create($request->validated());
 
-            return redirect()->route('master.engineer.engineer')->with('success', 'Engineer berhasil ditambahkan.');
+            return redirect()->route('engineer.index')->with('success', 'Engineer berhasil ditambahkan.');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -103,9 +95,9 @@ class EngineerController extends Controller
 
                 $engineer->save();
 
-                return redirect()->route('engineer.engineer')->with('success', 'Engineer berhasil diupdate.');
+                return redirect()->route('engineer.index')->with('success', 'Engineer berhasil diupdate.');
             } else {
-                return redirect()->route('engineer.engineer')->with('error', 'Engineer tidak ditemukan.');
+                return redirect()->route('engineer.index')->with('error', 'Engineer tidak ditemukan.');
             }
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());

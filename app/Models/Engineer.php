@@ -16,4 +16,9 @@ class Engineer extends Model
         'status',
         'inactived_at',
     ];
+
+    public function borrows()
+    {
+        return $this->hasMany(Borrow::class);
+    }
 }
