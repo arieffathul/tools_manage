@@ -3,7 +3,7 @@
 @section('title', 'Kelola Tools')
 @section('content')
     <main class="app-main">
-        <div class="app-content-header">
+        <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
                 {{-- Header --}}
                 <div class="d-flex justify-content-between align-items-center mb-4">

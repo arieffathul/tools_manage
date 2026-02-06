@@ -51,7 +51,7 @@ class ToolController extends Controller
             Tool::create($data);
 
             return redirect()
-                ->route('master.tool.index')
+                ->route('tool.index')
                 ->with('success', 'Tool berhasil ditambahkan');
 
         } catch (Exception $e) {
@@ -115,10 +115,10 @@ class ToolController extends Controller
                 $tool->update($data);
 
                 return redirect()
-                    ->route('master.tool.index')
+                    ->route('tool.index')
                     ->with('success', 'Tool berhasil diupdate');
             } else {
-                return redirect()->route('master.tool.index')->with('error', 'Engineer tidak ditemukan.');
+                return redirect()->route('tool.index')->with('error', 'Engineer tidak ditemukan.');
             }
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -149,7 +149,7 @@ class ToolController extends Controller
             $tool->delete();
 
             return redirect()
-                ->route('master.tool.index')
+                ->route('tool.index')
                 ->with('success', 'Tool berhasil dihapus');
         } catch (Exception $e) {
             $response['message'] = $e->getMessage();
