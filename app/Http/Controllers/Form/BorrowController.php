@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Form;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrow\StoreBorrowRequest;
 use App\Models\Borrow;
+use App\Models\Engineer;
+use App\Models\Tool;
 use Illuminate\Http\Request;
 
 class BorrowController extends Controller
@@ -33,7 +35,25 @@ class BorrowController extends Controller
 
     public function form()
     {
-        return view('forms.borrow');
+        $engineers = Engineer::where('status', 'active')->get();
+        // Di controller
+        $tools = Tool::all()->map(function ($tool) {
+            return [
+                'id' => $tool->id,
+                'code' => $tool->code,
+                'name' => $tool->name,
+                'description' => $tool->description,
+                'spec' => $tool->spec,
+                'image' => $tool->image ? asset('storage/'.$tool->image) : null,
+                'quantity' => $tool->quantity,
+                'locator' => $tool->locator,
+                'current_quantity' => $tool->current_quantity,
+                'current_locator' => $tool->current_locator,
+                'last_audited_at' => $tool->last_audited_at,
+            ];
+        });        // dd($tools->first()); // Uncomment to check
+
+        return view('forms.borrow', compact('engineers', 'tools'));
     }
 
     /**
@@ -53,6 +73,7 @@ class BorrowController extends Controller
                 'job_reference' => $data['job_reference'],
                 'is_completed' => $data['is_completed'] ?? 0,
                 'image' => $data['image'] ?? null,
+                'note' => $data['note'] ?? null,
             ]);
 
             foreach ($data['details'] as $detail) {

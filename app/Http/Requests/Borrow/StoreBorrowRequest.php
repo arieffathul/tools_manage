@@ -26,6 +26,7 @@ class StoreBorrowRequest extends FormRequest
             'job_reference' => 'required|string|max:255',
             'is_completed' => 'nullable|integer',
             'image' => 'nullable|image|max:2048',
+            'note' => 'nullable|string',
             'details' => 'required|array',
             'details.*.tool_id' => 'required|exists:tools,id',
             'details.*.quantity' => 'required|integer|min:1',
