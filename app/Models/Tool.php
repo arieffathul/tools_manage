@@ -28,4 +28,13 @@ class Tool extends Model
         return $this->hasMany(BorrowDetail::class);
     }
 
+    public function decrementQuantity($amount)
+    {
+        if ($this->quantity < $amount) {
+            throw new \Exception('Insufficient stock');
+        }
+
+        $this->current_quantity -= $amount;
+        $this->save();
+    }
 }

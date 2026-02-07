@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrow Form | Tools Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -23,7 +24,7 @@
                     </div>
                 </div>
 
-                <form id="borrowForm">
+                <form id="borrowForm" action="{{ route('borrow.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Engineer Selection -->
@@ -423,8 +424,8 @@
                         ${tool.image ?
                             `<img src="${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                             `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                                                                                            <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                                                                                        </div>`
+                                                                                                                                                                                                                                                            <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                                                                                                                        </div>`
                         }
                     </div>
                     <div class="flex-grow-1">
@@ -616,8 +617,8 @@
                 ${item.image ?
                     `<img src="${item.image}" alt="${item.name}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">` :
                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                                                                                    <i class="bi bi-tools text-muted"></i>
-                                                                                                                </div>`
+                                                                                                                                                                                    <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                </div>`
                 }
             </div>
             <div class="flex-grow-1">
@@ -807,9 +808,6 @@
                     engineerSearch.value = '';
                     toolSearch.value = '';
                     document.getElementById('jobReference').value = '';
-                    document.getElementById('purpose').value = '';
-                    document.getElementById('returnDate').value = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                        .toISOString().split('T')[0];
                     document.getElementById('borrowPhoto').value = '';
                     document.getElementById('note').value = '';
 
@@ -818,6 +816,7 @@
                 }
             };
 
+            // Form Submission
             // Form Submission
             document.getElementById('borrowForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -833,55 +832,62 @@
                     return;
                 }
 
-                const purpose = document.getElementById('purpose').value.trim();
-                if (!purpose) {
-                    showToast('Harap isi tujuan peminjaman', 'error');
+                if (!borrowPhoto.files[0]) {
+                    showToast('Harap upload foto sebelum submit', 'error');
                     return;
                 }
 
-                const returnDate = document.getElementById('returnDate').value;
-                if (!returnDate) {
-                    showToast('Please select return date', 'error');
-                    return;
-                }
+                // Create FormData
+                const formData = new FormData();
+                formData.append('engineer_id', selectedEngineer.id);
+                formData.append('job_reference', document.getElementById('jobReference').value);
+                formData.append('note', document.getElementById('notes').value);
+                formData.append('image', borrowPhoto.files[0]);
 
-                // Prepare data
-                const borrowData = {
-                    engineer_id: selectedEngineer.id,
-                    purpose: purpose,
-                    job_reference: document.getElementById('jobReference').value,
-                    expected_return_date: returnDate,
-                    notes: document.getElementById('notes').value,
-                    tools: cart.map(item => ({
-                        tool_id: item.tool_id,
-                        quantity: item.quantity
-                    }))
-                };
+                // Add details
+                cart.forEach((item, index) => {
+                    formData.append(`details[${index}][tool_id]`, item.tool_id);
+                    formData.append(`details[${index}][quantity]`, item.quantity);
+                });
 
-                console.log('Borrow Data to submit:', borrowData);
+                // Show loading
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+                submitBtn.disabled = true;
 
-                // Show success message
-                showToast('Data peminjaman berhasil disubmit!');
+                // Ambil CSRF token dari meta tag
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                // Here you would normally submit via AJAX
-                // fetch('/api/borrow', {
-                //     method: 'POST',
-                //     headers: {'Content-Type': 'application/json'},
-                //     body: JSON.stringify(borrowData)
-                // })
-                // .then(response => response.json())
-                // .then(data => {
-                //     showToast('Success! Borrow request created.');
-                //     resetForm();
-                // });
-
-                // For demo only - show alert
-                setTimeout(() => {
-                    alert(
-                        `Borrow request for ${selectedEngineer.name} submitted!\n\nTools: ${cart.length} items\nPurpose: ${purpose}\nReturn Date: ${returnDate}`
-                    );
-                    resetForm();
-                }, 1000);
+                // Submit via AJAX
+                fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast('Data peminjaman berhasil disimpan!', 'success');
+                            setTimeout(() => {
+                                window.location.href = data.redirect || '/complete';
+                            }, 1500);
+                        } else {
+                            showToast(data.message || 'Terjadi kesalahan', 'error');
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('Terjadi kesalahan saat menyimpan data', 'error');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    });
             });
 
             // ==================== EVENT LISTENERS ====================

@@ -68,18 +68,49 @@ class BorrowController extends Controller
                 $data['image'] = $request->file('image')->store('borrow', 'public');
             }
 
+            // Validasi stok tools
+            foreach ($data['details'] as $detail) {
+                $tool = Tool::find($detail['tool_id']);
+                if (! $tool) {
+                    // Jika AJAX request, return JSON
+                    if ($request->ajax()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Tool tidak ditemukan',
+                        ], 422);
+                    }
+
+                    return back()->with('error', 'Tool tidak ditemukan');
+                }
+            }
+
             $borrow = Borrow::create([
                 'engineer_id' => $data['engineer_id'] ?? null,
                 'job_reference' => $data['job_reference'],
-                'is_completed' => $data['is_completed'] ?? 0,
+                'is_completed' => 0, // Default value
                 'image' => $data['image'] ?? null,
                 'note' => $data['note'] ?? null,
             ]);
 
+            // Create borrow details dan update current_quantity
             foreach ($data['details'] as $detail) {
-                $borrow->borrowDetails()->create([ // Ganti details() menjadi borrowDetails()
+                $borrow->borrowDetails()->create([
                     'tool_id' => $detail['tool_id'],
                     'quantity' => $detail['quantity'],
+                ]);
+
+                // Update current_quantity
+                $tool = Tool::find($detail['tool_id']);
+                $tool->decrement('current_quantity', $detail['quantity']);
+                $tool->save();
+            }
+
+            // Jika AJAX request, return JSON
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data peminjaman berhasil disimpan',
+                    'redirect' => route('complete'),
                 ]);
             }
 
@@ -87,6 +118,14 @@ class BorrowController extends Controller
                 ->route('complete')
                 ->with('success', 'Borrow record created successfully.');
         } catch (\Exception $e) {
+            // Jika AJAX request, return JSON error
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
+
             return back()->with('error', $e->getMessage());
         }
     }
