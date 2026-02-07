@@ -30,7 +30,7 @@
 
         {{-- Logo & Header --}}
         <div class="text-center mb-6">
-           <div
+            <div
                 class="mx-auto w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
                 <i class="bi bi-tools text-3xl text-white"></i>
             </div>
