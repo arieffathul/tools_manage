@@ -77,7 +77,7 @@ class BorrowController extends Controller
             ]);
 
             foreach ($data['details'] as $detail) {
-                $borrow->details()->create([
+                $borrow->borrowDetails()->create([ // Ganti details() menjadi borrowDetails()
                     'tool_id' => $detail['tool_id'],
                     'quantity' => $detail['quantity'],
                 ]);

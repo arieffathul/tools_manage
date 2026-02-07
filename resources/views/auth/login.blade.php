@@ -13,25 +13,24 @@
 </head>
 
 <body
-    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 relative overflow-y-auto">
+    class="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-100 via-indigo-100 to-purple-100 relative overflow-y-auto">
 
     {{-- Background Blur Decoration --}}
     <div class="absolute inset-0 pointer-events-none">
         <div
-            class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/30 to-indigo-500/30 rounded-full blur-3xl">
+            class="absolute top-0 right-0 w-96 h-96 bg-linear-to-br from-blue-400/30 to-indigo-500/30 rounded-full blur-3xl">
         </div>
         <div
-            class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-indigo-400/30 to-blue-500/30 rounded-full blur-3xl">
+            class="absolute bottom-0 left-0 w-96 h-96 bg-linear-to-tr from-indigo-400/30 to-blue-500/30 rounded-full blur-3xl">
         </div>
     </div>
 
-    <div
-        class="w-full max-w-[500px] bg-white/30 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl p-8 z-10">
+    <div class="w-full max-w-125 bg-white/30 backdrop-blur-lg border border-white/20 shadow-2xl rounded-xl p-8 z-10">
 
         {{-- Logo & Header --}}
         <div class="text-center mb-6">
             <div
-                class="mx-auto w-16 h-16 flex items-center justify-center bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
+                class="mx-auto w-16 h-16 flex items-center justify-center bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
                 <i class="bi bi-tools text-3xl text-white"></i>
             </div>
             <h1 class="text-3xl font-bold text-gray-800 mt-4">Tools Management</h1>
@@ -61,7 +60,7 @@
                 <div class="relative">
                     <input type="text" name="name" id="name" placeholder="Enter your username"
                         value="{{ old('name') }}" required
-                        class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') border-red-500 @enderror">
+                        class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('name') @enderror">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                         <i class="bi bi-person"></i>
                     </div>
@@ -76,7 +75,7 @@
                 <label for="password" class="block mb-1 text-sm font-medium text-gray-700">Password</label>
                 <div class="relative">
                     <input type="password" name="password" id="password" placeholder="Enter your password" required
-                        class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-500 @enderror">
+                        class="w-full border border-gray-300 rounded-lg py-2 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') @enderror">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                         <i class="bi bi-lock-fill"></i>
                     </div>
@@ -99,7 +98,7 @@
 
             {{-- Submit --}}
             <button type="submit"
-                class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition">
+                class="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white py-2 rounded-lg font-medium hover:opacity-90 transition">
                 Sign In
             </button>
         </form>

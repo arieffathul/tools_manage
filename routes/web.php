@@ -25,3 +25,4 @@ Route::middleware('admin')->group(function () {
 });
 
 Route::get('form/borrow', [BorrowController::class, 'form'])->name('borrow.form');
+Route::post('form/borrow/submit', [BorrowController::class, 'store'])->name('borrow.submit');
