@@ -101,10 +101,10 @@
                                                     </td>
                                                     <td style="min-width: 120px;">
                                                         @if ($tool->current_quantity == 0)
-                                                            <span class="badge bg-danger">0 (Habis)</span>
-                                                        @elseif($tool->current_quantity < $tool->quantity)
+                                                            <span class="badge bg-warning">0</span>
+                                                        @elseif($tool->current_quantity < 0)
                                                             <span
-                                                                class="badge bg-warning">{{ $tool->current_quantity }}</span>
+                                                                class="badge bg-danger">{{ $tool->current_quantity }}</span>
                                                         @else
                                                             <span
                                                                 class="badge bg-success">{{ $tool->current_quantity }}</span>

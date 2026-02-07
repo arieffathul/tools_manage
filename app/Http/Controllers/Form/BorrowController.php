@@ -16,13 +16,13 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        $viewIncomplete = request('is_completed') == 0;
 
-        $borrows = Borrow::with(['engineer', 'details'])
-            ->where('is_completed', $viewIncomplete ? 0 : 1)
+        $borrows = Borrow::with('engineer', 'borrowDetails.tool')
+            ->where('is_completed', 0)
+            ->latest()
             ->get();
 
-        return view('master.borrows', compact('borrows', 'viewIncomplete'));
+        return view('master.borrowList', compact('borrows'));
     }
 
     /**
@@ -101,7 +101,7 @@ class BorrowController extends Controller
 
                 // Update current_quantity
                 $tool = Tool::find($detail['tool_id']);
-                $tool->decrement('current_quantity', $detail['quantity']);
+                $tool->decrementQuantity($detail['quantity']);
                 $tool->save();
             }
 
@@ -110,12 +110,12 @@ class BorrowController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Data peminjaman berhasil disimpan',
-                    'redirect' => route('complete'),
+                    'redirect' => route('forms.complete'),
                 ]);
             }
 
             return redirect()
-                ->route('complete')
+                ->route('forms.complete')
                 ->with('success', 'Borrow record created successfully.');
         } catch (\Exception $e) {
             // Jika AJAX request, return JSON error
@@ -152,6 +152,29 @@ class BorrowController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    // BorrowController.php
+    public function complete(string $id)
+    {
+        // Update status menjadi selesai
+        $borrow = Borrow::findOrFail($id);
+
+        $borrow->update([
+            'is_completed' => 1,
+            'completed_at' => now(), // Jika ada kolom returned_at
+        ]);
+
+        // Optional: Kembalikan stok tools
+        foreach ($borrow->borrowDetails as $detail) {
+            if ($detail->tool) {
+                // Increment current_quantity saat dikembalikan
+                $detail->tool->incrementQuantity($detail['quantity']);
+            }
+        }
+
+        return back()->with('success', 'Peminjaman berhasil ditandai sebagai selesai.');
+
     }
 
     /**

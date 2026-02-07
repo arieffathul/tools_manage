@@ -38,7 +38,8 @@
                 </li>
                 <li class="nav-item">
                     {{-- <a href="{{ route('admin.request.index') }}" --}}
-                    <a href="{{ '#' }}" class="nav-link {{ $currentPage === 'borrows' ? 'active' : '' }}">
+                    <a href="{{ route('borrow.index') }}"
+                        class="nav-link {{ $currentPage === 'borrowList' ? 'active' : '' }}">
                         <i class="nav-icon bi bi-file-bar-graph-fill"></i>
                         <p>Borrows Data</p>
                     </a>

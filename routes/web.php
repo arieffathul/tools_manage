@@ -22,10 +22,12 @@ Route::middleware('admin')->group(function () {
     Route::patch('/engineer/{id}/activate', [EngineerController::class, 'activate'])
         ->name('engineer.activate');
     Route::resource('tool', App\Http\Controllers\Master\ToolController::class);
+    Route::resource('borrow', BorrowController::class);
+    Route::patch('borrow/{id}/complete', [BorrowController::class, 'complete'])->name('borrow.complete');
 });
 
 Route::get('form/borrow', [BorrowController::class, 'form'])->name('borrow.form');
 Route::post('form/borrow/submit', [BorrowController::class, 'store'])->name('borrow.store');
-Route::get('/complete', function () {
+Route::get('form/complete', function () {
     return view('forms.complete');
-})->name('complete');
+})->name('forms.complete');

@@ -30,11 +30,37 @@ class Tool extends Model
 
     public function decrementQuantity($amount)
     {
-        if ($this->quantity < $amount) {
-            throw new \Exception('Insufficient stock');
+        // Kurangi current_quantity
+        $this->current_quantity -= $amount;
+
+        // Jika hasilnya minus, set ke 0
+        if ($this->current_quantity < 0) {
+            $this->current_quantity = 0;
+
+            // Optional: Log warning
+            // \Log::warning("Tool {$this->name} (ID: {$this->id}) current_quantity set to 0 after decrement. Was negative.");
         }
 
-        $this->current_quantity -= $amount;
         $this->save();
+
+        return $this->current_quantity; // Return final value
+    }
+
+    public function incrementQuantity($amount)
+    {
+        // Tambah current_quantity
+        $this->current_quantity += $amount;
+
+        // Jika melebihi quantity (stok maksimal), set ke quantity
+        if ($this->current_quantity > $this->quantity) {
+            $this->current_quantity = $this->quantity;
+
+            // Optional: Log warning
+            // \Log::warning("Tool {$this->name} (ID: {$this->id}) current_quantity capped at max stock ({$this->quantity}) after increment.");
+        }
+
+        $this->save();
+
+        return $this->current_quantity; // Return final value
     }
 }

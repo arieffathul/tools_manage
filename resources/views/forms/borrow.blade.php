@@ -65,7 +65,7 @@
                             <div class="mb-2">
                                 <label class="form-label fw-semibold">Job Reference *</label>
                                 <input type="text" class="form-control" id="jobReference"
-                                    placeholder="input WO / deskripsi pekerjaan" required>
+                                    placeholder="input deskripsi pekerjaan" required>
                             </div>
                         </div>
 
@@ -424,8 +424,8 @@
                         ${tool.image ?
                             `<img src="${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                             `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                                                                                                                                                            <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                                                                                                                                                        </div>`
+                                                                                                                                                                                                                                                                    <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                                                                                                                                </div>`
                         }
                     </div>
                     <div class="flex-grow-1">
@@ -617,8 +617,8 @@
                 ${item.image ?
                     `<img src="${item.image}" alt="${item.name}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">` :
                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                                                                                                                                                    <i class="bi bi-tools text-muted"></i>
-                                                                                                                                                                                </div>`
+                                                                                                                                                                                            <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                        </div>`
                 }
             </div>
             <div class="flex-grow-1">
@@ -874,7 +874,7 @@
                         if (data.success) {
                             showToast('Data peminjaman berhasil disimpan!', 'success');
                             setTimeout(() => {
-                                window.location.href = data.redirect || '/complete';
+                                window.location.href = data.redirect || 'form/complete';
                             }, 1500);
                         } else {
                             showToast(data.message || 'Terjadi kesalahan', 'error');

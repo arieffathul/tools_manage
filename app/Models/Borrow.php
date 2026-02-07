@@ -14,6 +14,7 @@ class Borrow extends Model
         'engineer_id',
         'job_reference',
         'is_completed',
+        'completed_at',
         'image',
         'note',
     ];
