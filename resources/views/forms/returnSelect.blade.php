@@ -23,11 +23,11 @@
                         </h1>
                         <p class="text-muted mb-0 small">Pilih data peminjaman yang akan dikembalikan</p>
                     </div>
-                    <div>
-                        <a href="#" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-person-x me-1"></i> Tanpa Identitas
-                        </a>
-                    </div>
+                </div>
+                <div class="mb-2 d-flex justify-content-end">
+                    <a href="#" class="btn btn-primary btn-sm">
+                        <i class="bi bi-person-x me-1"></i> Tanpa Identitas
+                    </a>
                 </div>
             </div>
         </div>
@@ -122,9 +122,11 @@
                             <p class="text-muted mb-4">
                                 Semua peminjaman telah dikembalikan<br>atau tidak ada data peminjaman aktif.
                             </p>
-                            <a href="{{ url()->previous() }}" class="btn btn-primary">
-                                <i class="bi bi-arrow-left me-1"></i> Kembali
-                            </a>
+                            <div>
+                                <a href="#" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-person-x me-1"></i> Tanpa Identitas
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
