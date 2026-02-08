@@ -71,7 +71,7 @@
                         <!-- Title & Message -->
                         <h3 class="fw-bold text-success mb-3">Sukses!</h3>
                         <p class="text-muted mb-4">
-                            Form peminjaman tools telah berhasil disimpan.
+                            Form peminjaman / Pengembalian tools telah berhasil disimpan.
                         </p>
 
                         <!-- Session Messages -->

@@ -28,4 +28,9 @@ class Borrow extends Model
     {
         return $this->hasMany(BorrowDetail::class);
     }
+
+    public function borrowReturns()
+    {
+        return $this->hasMany(BorrowReturn::class);
+    }
 }

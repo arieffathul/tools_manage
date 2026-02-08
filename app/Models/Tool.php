@@ -28,6 +28,11 @@ class Tool extends Model
         return $this->hasMany(BorrowDetail::class);
     }
 
+    public function returnDetails()
+    {
+        return $this->hasMany(ReturnDetail::class);
+    }
+
     public function decrementQuantity($amount)
     {
         // Kurangi current_quantity
