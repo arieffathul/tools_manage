@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Request;
+namespace App\Http\Requests\Return;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,12 +25,12 @@ class StoreReturnRequest extends FormRequest
             'borrow_id' => 'nullable|exists:borrows,id',
             'returner_id' => 'required|exists:engineers,id',
             'job_reference' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
+            'notes' => 'nullable|string',
             'details' => 'required|array',
             'details.*.tool_id' => 'required|exists:tools,id',
             'details.*.quantity' => 'required|integer|min:1',
             'details.*.image' => 'nullable|image|max:2048',
-            'details.*.locator' => 'string|max:255',
+            'details.*.locator' => 'required|string|max:255',
         ];
     }
 }

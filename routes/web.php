@@ -38,3 +38,5 @@ Route::get('form/select-return', [BorrowReturnController::class, 'create'])
     ->name('borrowReturn.select');
 Route::get('form/return', [BorrowReturnController::class, 'form'])
     ->name('return.form');
+Route::post('form/return/submit', [BorrowReturnController::class, 'store'])
+    ->name('return.store');

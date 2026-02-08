@@ -18,12 +18,17 @@ class BorrowController extends Controller
     {
         $viewCompleted = request('is_completed') == 1;
 
-        $query = Borrow::with(['engineer', 'borrowDetails.tool'])
-            ->when($viewCompleted, function ($q) {
-                return $q->where('is_completed', 1);
-            }, function ($q) {
-                return $q->where('is_completed', 0);
-            });
+        $query = Borrow::with(['engineer', 'borrowDetails' => function ($query) use ($viewCompleted) {
+            // Jika viewCompleted false, hanya tampilkan borrow details yang belum complete
+            if (! $viewCompleted) {
+                $query->where('is_complete', 0);
+            }
+            $query->with('tool');
+        }])->when($viewCompleted, function ($q) {
+            return $q->where('is_completed', 1);
+        }, function ($q) {
+            return $q->where('is_completed', 0);
+        });
 
         // Filter by engineer
         if (request('engineer_id')) {
