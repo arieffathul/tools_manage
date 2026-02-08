@@ -24,7 +24,7 @@
                         <p class="text-muted mb-0 small">Pilih data peminjaman yang akan dikembalikan</p>
                     </div>
                     <div>
-                        <a href="#">
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-person-x me-1"></i> Tanpa Identitas
                         </a>
                     </div>
