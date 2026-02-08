@@ -424,8 +424,8 @@
                         ${tool.image ?
                             `<img src="${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                             `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                                                                                                                                                                    <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                                                                                                                                                                </div>`
+                                                                                                                                                                                                                                                                        <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                                                                                                                                    </div>`
                         }
                     </div>
                     <div class="flex-grow-1">
@@ -593,7 +593,6 @@
                         Locator: selectedTool.current_locator,
                         quantity: quantity,
                         max_quantity: selectedTool.quantity,
-                        // TAMBAHKAN INI: Simpan informasi gambar di item cart
                         image: selectedTool.image || null,
                         description: selectedTool.description || null
                     };
@@ -617,8 +616,8 @@
                 ${item.image ?
                     `<img src="${item.image}" alt="${item.name}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">` :
                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                                                                                                                                                            <i class="bi bi-tools text-muted"></i>
-                                                                                                                                                                                        </div>`
+                                                                                                                                                                                                <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                            </div>`
                 }
             </div>
             <div class="flex-grow-1">
