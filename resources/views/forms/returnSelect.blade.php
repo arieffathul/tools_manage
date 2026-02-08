@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="mb-2 d-flex justify-content-end">
-                    <a href="#" class="btn btn-primary btn-sm">
+                    <a href="{{ route('return.form') }}" class="btn btn-primary btn-sm">
                         <i class="bi bi-person-x me-1"></i> Tanpa Identitas
                     </a>
                 </div>
@@ -101,7 +101,7 @@
 
                             <!-- Action Button -->
                             <div class="mt-auto">
-                                <a href="#"
+                                <a href="{{ route('return.form', ['borrow_id' => $item->id]) }}"
                                     class="btn btn-success w-100 d-flex align-items-center justify-content-center">
                                     <i class="bi bi-check-circle me-2"></i>
                                     Pilih untuk Pengembalian
@@ -123,7 +123,7 @@
                                 Semua peminjaman telah dikembalikan<br>atau tidak ada data peminjaman aktif.
                             </p>
                             <div>
-                                <a href="#" class="btn btn-outline-secondary btn-sm">
+                                <a href="{{ route('return.form') }}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-person-x me-1"></i> Tanpa Identitas
                                 </a>
                             </div>

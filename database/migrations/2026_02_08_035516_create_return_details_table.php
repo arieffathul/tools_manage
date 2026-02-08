@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('return_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('borrow_return_id')->constrained('borrow_returns')->onDelete('cascade')->nullable();
+            $table->foreignId('borrow_return_id')->constrained('borrow_returns')->onDelete('cascade');
             $table->foreignId('tool_id')->constrained('tools')->onDelete('cascade');
             $table->integer('quantity');
             $table->string('image')->nullable();
