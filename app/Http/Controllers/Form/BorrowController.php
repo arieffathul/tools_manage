@@ -16,13 +16,61 @@ class BorrowController extends Controller
      */
     public function index()
     {
+        $viewCompleted = request('is_completed') == 1;
 
-        $borrows = Borrow::with('engineer', 'borrowDetails.tool')
-            ->where('is_completed', 0)
-            ->latest()
-            ->get();
+        $query = Borrow::with(['engineer', 'borrowDetails.tool'])
+            ->when($viewCompleted, function ($q) {
+                return $q->where('is_completed', 1);
+            }, function ($q) {
+                return $q->where('is_completed', 0);
+            });
 
-        return view('master.borrowList', compact('borrows'));
+        // Filter by engineer
+        if (request('engineer_id')) {
+            $query->where('engineer_id', request('engineer_id'));
+        }
+
+        // Filter by tool (via borrow details)
+        if (request('tool_id')) {
+            $query->whereHas('borrowDetails', function ($q) {
+                $q->where('tool_id', request('tool_id'));
+            });
+        }
+
+        // Filter by job reference
+        if (request('job_reference')) {
+            $query->where('job_reference', 'like', '%'.request('job_reference').'%');
+        }
+
+        // Filter by date range
+        if (request('start_date')) {
+            $query->whereDate('created_at', '>=', request('start_date'));
+        }
+        if (request('end_date')) {
+            $query->whereDate('created_at', '<=', request('end_date'));
+        }
+
+        // Sorting
+        switch (request('sort')) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            default: // newest
+                $query->latest();
+        }
+
+        $borrows = $query->paginate(20);
+
+        // Get data for filter dropdowns
+        $engineers = Engineer::where('status', 'active')->get();
+        $tools = Tool::all();
+
+        return view('master.borrowList  ', compact(
+            'borrows',
+            'viewCompleted',
+            'engineers',
+            'tools'
+        ));
     }
 
     /**

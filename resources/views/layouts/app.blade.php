@@ -74,6 +74,67 @@
         border-radius: 3px;
         /* Sudut membulat */
     }
+
+    /* Custom minimal untuk hasil dropdown */
+    #engineer-results,
+    #tool-results {
+        border-color: #86b7fe !important;
+    }
+
+    .search-select-result {
+        padding: 6px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid #f8f9fa;
+        font-size: 0.875rem;
+    }
+
+    .search-select-result:hover {
+        background-color: #f8f9fa;
+    }
+
+    .search-select-result.selected {
+        background-color: #e7f3ff;
+    }
+
+    .search-select-result:last-child {
+        border-bottom: none;
+    }
+
+    .tool-name {
+        font-weight: 500;
+    }
+
+    .tool-description {
+        font-size: 0.75rem;
+        color: #6c757d;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Saat input focus */
+    .form-control:focus {
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        position: relative;
+        z-index: 1051;
+    }
+
+    /* Custom styling untuk tombol clear */
+    /* Pastikan tombol clear terlihat */
+    .search-clear-btn {
+        border-top-right-radius: 0.25rem !important;
+        border-bottom-right-radius: 0.25rem !important;
+        padding: 0.25rem 0.5rem !important;
+        display: block;
+    }
+
+    /* Icon di dalam tombol */
+    .search-clear-btn i {
+        font-size: 1rem;
+        line-height: 1;
+        display: block;
+    }
 </style>
 <!--begin::Body-->
 
