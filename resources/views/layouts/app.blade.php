@@ -52,10 +52,10 @@
         integrity="sha512-BKSk8fFlJMNQ0sSLBzMxEL6KQZJYl+9Ajeb/1BdhU/6x6zB7D1jMvz07/Xurtj2dezf9sW5JpGFL2fFep+cTkg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     {{-- Inject page-specific styles here --}}
-    @stack('styles')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <!--end::Head-->
+@stack('styles')
 <style>
     /* Untuk Chrome, Edge, Safari */
     .dropdown-menu::-webkit-scrollbar {
@@ -134,6 +134,16 @@
         font-size: 1rem;
         line-height: 1;
         display: block;
+    }
+
+    .hover-shadow:hover {
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+        transform: translateY(-2px);
+        transition: all 0.2s;
+    }
+
+    .border-4 {
+        border-width: 4px !important;
     }
 </style>
 <!--begin::Body-->
