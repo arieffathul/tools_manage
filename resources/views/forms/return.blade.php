@@ -146,10 +146,7 @@
                                                     {{ $borrow->engineer->shift ?? '' }}
                                                 @endif
                                             </span>
-                                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                                onclick="clearSelectedEngineer()">
-                                                <i class="bi bi-x"></i>
-                                            </button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -201,7 +198,13 @@
                                                             <h6 class="mb-1">{{ $detail['tool_name'] }}</h6>
                                                             <div class="text-muted small">
                                                                 <i class="bi bi-box"></i> Dipinjam:
-                                                                {{ $detail['borrowed_quantity'] }} unit |
+                                                                {{ $detail['borrowed_quantity'] }} |
+                                                                {{-- <i class="bi bi-geo-alt"></i> Lokasi:
+                                                                {{ $detail['locator'] }} --}}
+                                                            </div>
+                                                            <div class="text-muted small">
+                                                                {{-- <i class="bi bi-box"></i> Dipinjam:
+                                                                {{ $detail['borrowed_quantity'] }} | --}}
                                                                 <i class="bi bi-geo-alt"></i> Lokasi:
                                                                 {{ $detail['locator'] }}
                                                             </div>
@@ -244,8 +247,8 @@
                                                 <small>
                                                     <i class="bi bi-tag"></i> Kode: <span
                                                         id="selectedToolCode"></span> |
-                                                    <i class="bi bi-box"></i> Stock: <span
-                                                        id="selectedToolStock"></span>
+                                                    <i class="bi bi-box"></i> Stock: <span id="selectedToolStock"
+                                                        class="d-none"></span> <span id="selectedToolStockNow"></span>
                                                     |
                                                     <i class="bi bi-geo-alt"></i> Lokasi: <span
                                                         id="selectedToolLocator"></span>
@@ -338,9 +341,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        function updateCartQuantity(itemId, change, newValue = null) {
+            const index = cart.findIndex(item => item.id === itemId);
+            if (index === -1) return;
+
+            let newQty = newValue !== null ? parseInt(newValue) : cart[index].quantity + change;
+            if (newQty < 1) newQty = 1;
+            if (newQty > cart[index].max_quantity) {
+                showToast(`Jumlah melebihi batas (${cart[index].max_quantity})`, 'error');
+                newQty = cart[index].max_quantity;
+            }
+
+            cart[index].quantity = newQty;
+            const input = document.querySelector(`#cart-item-${itemId} .quantity-input`);
+            const hiddenInput = document.querySelector(`#cart-item-${itemId} input[name*="[quantity]"]`);
+            if (input) input.value = newQty;
+            if (hiddenInput) hiddenInput.value = newQty;
+        };
         document.addEventListener('DOMContentLoaded', function() {
             // ==================== GLOBAL VARIABLES ====================
             let cart = [];
+            window.cart = cart; // Make cart accessible globally for debugging
             let selectedEngineer = null;
             let selectedTool = null;
             const engineers = @json($engineers ?? []);
@@ -363,6 +384,7 @@
             const selectedToolName = document.getElementById('selectedToolName');
             const selectedToolCode = document.getElementById('selectedToolCode');
             const selectedToolStock = document.getElementById('selectedToolStock');
+            const selectedToolStockNow = document.getElementById('selectedToolStockNow');
             const selectedToolLocator = document.getElementById('selectedToolLocator');
             const selectedToolImageContainer = document.getElementById('selectedToolImageContainer');
             const selectedToolImageRow = document.getElementById('selectedToolImageRow');
@@ -379,7 +401,7 @@
             const toastMessage = document.getElementById('toastMessage');
 
             // ==================== UTILITY FUNCTIONS ====================
-            function showToast(message, type = 'success') {
+            window.showToast = function(message, type = 'success') {
                 const icon = document.querySelector('#liveToast .toast-header i');
                 const header = document.querySelector('#liveToast .toast-header strong');
 
@@ -399,19 +421,13 @@
             }
 
             function updateSubmitButton() {
-                const hasValidEngineer =
-                    selectedEngineer !== null ||
-                    selectedEngineerId.value !== '';
-
+                const hasValidEngineer = selectedEngineer !== null || selectedEngineerId.value !== '';
                 // submitBtn.disabled = !(hasValidEngineer && cart.length > 0);
             }
-
-
 
             function updateCartCounter() {
                 const count = cart.length;
                 cartCount.textContent = count;
-                // console.log('Cart updated. Count:', count, 'Items:', cart); // Debug
             }
 
             // ==================== INITIALIZE FOR BORROW ====================
@@ -450,7 +466,9 @@
                             description: tool?.description || null,
                             quantity: maxQuantity,
                             locator: locator,
-                            max_quantity: maxQuantity
+                            max_quantity: maxQuantity,
+                            current_quantity: tool?.current_quantity || 0
+
                         };
 
                         cart.push(cartItem);
@@ -490,13 +508,13 @@
                         const item = document.createElement('div');
                         item.className = 'search-result-item';
                         item.innerHTML = `
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${engineer.name}</strong>
-                                </div>
-                                ${engineer.shift ? `<span class="badge bg-info">${engineer.shift}</span>` : ''}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${engineer.name}</strong>
                             </div>
-                        `;
+                            ${engineer.shift ? `<span class="badge bg-info">${engineer.shift}</span>` : ''}
+                        </div>
+                    `;
                         item.addEventListener('click', () => selectEngineer(engineer));
                         engineerResults.appendChild(item);
                     });
@@ -505,43 +523,19 @@
             });
 
             function selectEngineer(engineer) {
-                // console.log('Selecting engineer:', engineer);
-
-                selectedEngineer = engineer; // <-- Ini harusnya mengatur
-
-                // Update card dengan innerHTML untuk memastikan element ada
-                selectedEngineerCard.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h6 class="mb-1">${engineer.name}</h6>
-            </div>
-            <div>
-                <span class="badge bg-success me-2">${engineer.shift || ''}</span>
-
-            </div>
-        </div>
-    `;
-
+                selectedEngineer = engineer;
+                selectedEngineerName.textContent = engineer.name;
+                selectedEngineerShift.textContent = engineer.shift || '';
                 selectedEngineerCard.style.display = 'block';
                 selectedEngineerId.value = engineer.id;
                 engineerSearch.value = engineer.name;
-
-                if (engineerResults) {
-                    engineerResults.style.display = 'none';
-                }
+                engineerResults.style.display = 'none';
 
                 showToast(`Engineer ${engineer.name} dipilih`);
                 updateSubmitButton();
             }
 
-            function clearSelectedEngineer() {
-                selectedEngineer = null;
-                selectedEngineerCard.style.display = 'none';
-                engineerSearch.value = '';
-                selectedEngineerId.value = '';
-                showToast('Engineer dihapus');
-                updateSubmitButton();
-            }
+
 
             // ==================== TOOL FUNCTIONS ====================
             toolSearch.addEventListener('input', function(e) {
@@ -569,30 +563,30 @@
                         const item = document.createElement('div');
                         item.className = 'search-result-item';
                         item.innerHTML = `
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0 me-3">
-                                    ${tool.image ?
-                                        `<img src="${tool.image}" alt="${tool.name}" class="tool-image-small">` :
-                                        `<div class="tool-image-small bg-light d-flex align-items-center justify-content-center">
-                                                                                            <i class="bi bi-tools text-muted"></i>
-                                                                                        </div>`
-                                    }
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <strong class="mb-1">${tool.name || 'No Name'}</strong>
-                                            <div class="text-muted small">
-                                                <i class="bi bi-tag"></i> ${tool.code || '-'} |
-                                                <i class="bi bi-box"></i> Stock: ${tool.current_quantity} |
-                                                <i class="bi bi-geo-alt"></i> ${tool.current_locator || 'Unknown'}
-                                            </div>
-                                            ${tool.description ? `<p class="mb-1 small text-truncate" style="max-width: 300px;">${tool.description}</p>` : ''}
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                ${tool.image ?
+                                    `<img src="${tool.image}" alt="${tool.name}" class="tool-image-small">` :
+                                    `<div class="tool-image-small bg-light d-flex align-items-center justify-content-center">
+                                                                                                                                                                                                        <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                                    </div>`
+                                }
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong class="mb-1">${tool.name || 'No Name'}</strong>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-tag"></i> ${tool.code || '-'} |
+                                            <i class="bi bi-box"></i> Stock: ${tool.current_quantity} |
+                                            <i class="bi bi-geo-alt"></i> ${tool.current_locator || 'Unknown'}
                                         </div>
+                                        ${tool.description ? `<p class="mb-1 small text-truncate" style="max-width: 300px;">${tool.description}</p>` : ''}
                                     </div>
                                 </div>
                             </div>
-                        `;
+                        </div>
+                    `;
                         item.addEventListener('click', () => selectTool(tool));
                         toolResults.appendChild(item);
                     });
@@ -609,7 +603,8 @@
                 selectedTool = tool;
                 selectedToolName.textContent = tool.name || 'No Name';
                 selectedToolCode.textContent = tool.code || '-';
-                selectedToolStock.textContent = tool.current_quantity;
+                selectedToolStock.textContent = tool.quantity;
+                selectedToolStockNow.textContent = tool.current_quantity;
                 selectedToolLocator.textContent = tool.current_locator || 'Unknown';
                 toolLocator.value = tool.current_locator || tool.locator || '';
 
@@ -619,8 +614,8 @@
 
                 if (tool.image) {
                     selectedToolImageContainer.innerHTML = `
-                        <img src="${tool.image}" alt="${tool.name}" class="img-fluid rounded" style="max-height: 150px;">
-                    `;
+                    <img src="${tool.image}" alt="${tool.name}" class="img-fluid rounded" style="max-height: 150px;">
+                `;
                     selectedToolImageRow.style.display = 'block';
                 } else {
                     selectedToolImageRow.style.display = 'none';
@@ -638,15 +633,30 @@
                 selectedToolCard.style.display = 'none';
                 toolSearch.value = '';
                 toolResults.style.display = 'none';
-                // showToast('Tool ditambahkan ke daftar');
+                showToast('Tool dihapus');
             }
 
-            function decreaseToolQuantity() {
+            // function decreaseToolQuantity() {
+            //     const current = parseInt(toolQuantity.value);
+            //     if (current > 1) toolQuantity.value = current - 1;
+            // }
+
+            // function increaseToolQuantity() {
+            //     const current = parseInt(toolQuantity.value);
+            //     const max = parseInt(toolQuantity.max);
+            //     if (current < max) {
+            //         toolQuantity.value = current + 1;
+            //     } else {
+            //         showToast(`Jumlah melebihi stock tersedia (${max})`, 'error');
+            //     }
+            // }
+
+            window.decreaseToolQuantity = function() {
                 const current = parseInt(toolQuantity.value);
                 if (current > 1) toolQuantity.value = current - 1;
-            }
+            };
 
-            function increaseToolQuantity() {
+            window.increaseToolQuantity = function() {
                 const current = parseInt(toolQuantity.value);
                 const max = parseInt(toolQuantity.max);
                 if (current < max) {
@@ -654,7 +664,7 @@
                 } else {
                     showToast(`Jumlah melebihi stock tersedia (${max})`, 'error');
                 }
-            }
+            };
 
             // Add tool to cart
             addToCartBtn.addEventListener('click', function() {
@@ -669,23 +679,30 @@
                     return;
                 }
 
+                // CEK: Jangan biarkan tool yang sama ditambahkan dua kali
+                if (cart.some(item => item.tool_id === selectedTool.id)) {
+                    showToast('Tool ini sudah ditambahkan ke keranjang', 'error');
+                    return;
+                }
+
                 const cartItem = {
                     id: Date.now() + toolCounter++,
                     tool_id: selectedTool.id,
-                    name: selectedTool.name,
+                    name: selectedTool.name || 'No Name',
                     code: selectedTool.code || '-',
                     image: selectedTool.image || null,
                     description: selectedTool.description || null,
                     quantity: parseInt(toolQuantity.value),
                     locator: toolLocator.value.trim(),
-                    max_quantity: parseInt(toolQuantity.max)
+                    max_quantity: parseInt(toolQuantity.max),
+                    current_quantity: selectedTool.current_quantity || 0
                 };
 
                 cart.push(cartItem);
                 addCartItem(cartItem);
                 clearSelectedTool();
 
-                showToast(`${selectedTool.name} ditambahkan ke daftar`);
+                showToast(`${selectedTool.name || 'Tool'} ditambahkan ke daftar`);
                 updateCartCounter();
                 updateSubmitButton();
             });
@@ -700,86 +717,73 @@
                 cartItem.className = 'border rounded p-3 mb-2';
                 cartItem.id = `cart-item-${item.id}`;
                 cartItem.innerHTML = `
-        <div class="d-flex justify-content-between align-items-start mb-2">
-            <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                    ${item.image ?
-                        `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
-                        `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-tools text-muted"></i>
-                                </div>`
-                    }
-                </div>
-                <div class="flex-grow-1">
-                    <h6 class="mb-1">${item.name}</h6>
-                    <div class="text-muted small">
-                        <i class="bi bi-tag"></i> ${item.code} |
-                        <i class="bi bi-geo-alt"></i> ${item.locator}
-                    </div>
-                    ${item.description ? `<small class="text-muted">${item.description}</small>` : ''}
-                </div>
+    <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="d-flex">
+            <div class="flex-shrink-0 me-3">
+                ${item.image ?
+                    `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
+                    `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
+                                                                                                                                                <i class="bi bi-tools text-muted"></i>
+                                                                                                                                            </div>`
+                }
             </div>
-            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCartItem(${item.id})">
-                <i class="bi bi-trash"></i>
-            </button>
-        </div>
-
-        <!-- FORM INPUTS FOR THIS ITEM -->
-        <div class="row g-2 align-items-center">
-            <div class="col-md-4">
-                <label class="form-label small mb-1">Jumlah:</label>
-                <div class="input-group input-group-sm">
-                    <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, -1)">
-                        <i class="bi bi-dash"></i>
-                    </button>
-                    <input type="number" class="form-control text-center quantity-input"
-                           value="${item.quantity}" min="1" max="${item.max_quantity}"
-                           onchange="updateCartQuantity(${item.id}, 0, this.value)">
-                    <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, 1)">
-                        <i class="bi bi-plus"></i>
-                    </button>
+            <div class="flex-grow-1">
+                <h6 class="mb-1">${item.name}</h6>
+                <div class="text-muted small">
+                    <i class="bi bi-box"></i> ${item.current_quantity} |
+                    <i class="bi bi-geo-alt"></i> ${item.locator}
                 </div>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label small mb-1">Locator:</label>
-                <input type="text" class="form-control form-control-sm"
-                       id="locator-${item.id}"
-                       value="${item.locator}"
-                       placeholder="Lokasi pengembalian"
-                       onchange="updateCartLocator(${item.id}, this.value)">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label small mb-1">Foto:</label>
-                <input type="file" class="form-control form-control-sm"
-                       name="details[${cartIndex}][image]"
-                       accept="image/*"
-                       required>
+                ${item.description ? `<small class="text-muted">${item.description}</small>` : ''}
             </div>
         </div>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCartItem(${item.id})">
+            <i class="bi bi-trash"></i>
+        </button>
+    </div>
 
-        <!-- HIDDEN INPUTS FOR FORM SUBMISSION -->
-        <input type="hidden" name="details[${cartIndex}][tool_id]" value="${item.tool_id}">
-        <input type="hidden" name="details[${cartIndex}][quantity]" id="hidden-quantity-${item.id}" value="${item.quantity}">
-        <input type="hidden" name="details[${cartIndex}][locator]" id="hidden-locator-${item.id}" value="${item.locator}">
-    `;
+    <!-- FORM INPUTS FOR THIS ITEM -->
+    <div class="row g-2 align-items-center">
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Jumlah:</label>
+            <div class="input-group input-group-sm">
+                <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, -1)">
+                    <i class="bi bi-dash"></i>
+                </button>
+                <input type="number" class="form-control text-center quantity-input"
+                       value="${item.quantity}" min="1" max="${item.max_quantity}"
+                       onchange="updateCartQuantity(${item.id}, 0, this.value)">
+                <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, 1)">
+                    <i class="bi bi-plus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Locator:</label>
+            <input type="text" class="form-control form-control-sm"
+                   id="locator-${item.id}"
+                   value="${item.locator}"
+                   placeholder="Lokasi pengembalian"
+                   onchange="updateCartLocator(${item.id}, this.value)"
+                   required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small mb-1">Foto:</label>
+            <input type="file" class="form-control form-control-sm"
+                   name="details[${cartIndex}][image]"
+                   accept="image/*"
+                   required>
+        </div>
+    </div>
+
+    <!-- HIDDEN INPUTS FOR FORM SUBMISSION -->
+    <input type="hidden" name="details[${cartIndex}][tool_id]" value="${item.tool_id}">
+    <input type="hidden" name="details[${cartIndex}][quantity]" id="hidden-quantity-${item.id}" value="${item.quantity}">
+    <input type="hidden" name="details[${cartIndex}][locator]" id="hidden-locator-${item.id}" value="${item.locator}">
+`;
 
                 cartContainer.appendChild(cartItem);
                 updateCartCounter();
             }
-            window.updateCartLocator = function(itemId, value) {
-                const index = cart.findIndex(item => item.id === itemId);
-                if (index === -1) return;
-
-                // update cart state
-                cart[index].locator = value;
-
-                // update hidden input
-                const hiddenInput = document.getElementById(`hidden-locator-${itemId}`);
-                if (hiddenInput) {
-                    hiddenInput.value = value;
-                }
-            };
-
 
             // Global cart functions
             window.updateCartQuantity = function(itemId, change, newValue = null) {
@@ -798,6 +802,17 @@
                 const hiddenInput = document.querySelector(`#cart-item-${itemId} input[name*="[quantity]"]`);
                 if (input) input.value = newQty;
                 if (hiddenInput) hiddenInput.value = newQty;
+            };
+
+            window.updateCartLocator = function(itemId, value) {
+                const index = cart.findIndex(item => item.id === itemId);
+                if (index === -1) return;
+
+                cart[index].locator = value;
+                const hiddenInput = document.getElementById(`hidden-locator-${itemId}`);
+                if (hiddenInput) {
+                    hiddenInput.value = value;
+                }
             };
 
             window.removeCartItem = function(itemId) {
@@ -836,8 +851,10 @@
             document.getElementById('returnForm').addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                if (!selectedEngineer) {
+                // Validasi sebelum submit
+                if (!selectedEngineerId.value) {
                     showToast('Harap pilih engineer yang mengembalikan', 'error');
+                    engineerSearch.focus();
                     return;
                 }
 
@@ -846,48 +863,43 @@
                     return;
                 }
 
+                // Validasi semua file input
+                const fileInputs = document.querySelectorAll('input[type="file"]');
+                let allFilesValid = true;
+                fileInputs.forEach(input => {
+                    if (!input.files || input.files.length === 0) {
+                        allFilesValid = false;
+                        showToast('Harap upload foto untuk semua tool', 'error');
+                    }
+                });
+
+                if (!allFilesValid) return;
+
+                // Update semua hidden inputs dengan data cart terbaru
+                cart.forEach((item, index) => {
+                    const quantityInput = document.getElementById(`hidden-quantity-${item.id}`);
+                    const locatorInput = document.getElementById(`hidden-locator-${item.id}`);
+                    const toolIdInput = document.querySelector(
+                        `#cart-item-${item.id} input[name*="[tool_id]"]`);
+
+                    if (quantityInput) quantityInput.value = item.quantity;
+                    if (locatorInput) locatorInput.value = item.locator;
+                    if (toolIdInput) toolIdInput.value = item.tool_id;
+
+                    // Update nama input file sesuai index
+                    const fileInput = document.querySelector(
+                        `#cart-item-${item.id} input[type="file"]`);
+                    if (fileInput) {
+                        fileInput.name = `details[${index}][image]`;
+                    }
+                });
+
+                // Submit form secara normal (bukan AJAX)
                 submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
                 submitBtn.disabled = true;
 
-                const formData = new FormData(this);
-
-                fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content'),
-                        },
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            showToast(data.message || 'Pengembalian berhasil disimpan!', 'success');
-                            setTimeout(() => {
-                                window.location.href = data.redirect ||
-                                    '{{ route('forms.complete') }}';
-                            }, 1500);
-                        } else {
-                            showToast(data.message || 'Terjadi kesalahan', 'error');
-                            submitBtn.innerHTML =
-                                '<i class="bi bi-check-circle me-1"></i> Simpan Pengembalian';
-                            submitBtn.disabled = false;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showToast('Terjadi kesalahan saat menyimpan data', 'error');
-                        submitBtn.innerHTML =
-                            '<i class="bi bi-check-circle me-1"></i> Simpan Pengembalian';
-                        submitBtn.disabled = false;
-                    });
+                // Submit form secara tradisional
+                this.submit();
             });
 
             // Reset Form
@@ -901,10 +913,9 @@
                         selectedEngineerCard.style.display = 'none';
                         engineerSearch.value = '';
                         selectedEngineerId.value = '';
-                    }
-
-                    if (hasBorrow) {
-                        const engineerId = @json($borrow->engineer->id ?? '');
+                    } else {
+                        // Untuk dengan borrow, reset ke engineer asli
+                        const engineerId = @json($borrow && $borrow->engineer ? $borrow->engineer->id : '');
                         const engineer = engineers.find(e => e.id == engineerId);
                         if (engineer) {
                             selectedEngineer = engineer;
@@ -918,6 +929,8 @@
 
                     selectedToolCard.style.display = 'none';
                     toolSearch.value = '';
+                    toolQuantity.value = 1;
+                    toolLocator.value = '';
 
                     cartContainer.innerHTML = '';
                     emptyCart.style.display = 'block';
@@ -944,17 +957,19 @@
 
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
-                if (!engineerSearch.contains(e.target) && !engineerResults.contains(e.target)) {
+                if (engineerSearch && !engineerSearch.contains(e.target) && engineerResults && !
+                    engineerResults.contains(e.target)) {
                     engineerResults.style.display = 'none';
                 }
-                if (!toolSearch.contains(e.target) && !toolResults.contains(e.target)) {
+                if (toolSearch && !toolSearch.contains(e.target) && toolResults && !toolResults.contains(e
+                        .target)) {
                     toolResults.style.display = 'none';
                 }
             });
 
             // Initialize
             updateSubmitButton();
-            if (hasBorrow && selectedEngineer && borrowDetails.length > 0) {
+            if (hasBorrow && selectedEngineerId.value && borrowDetails.length > 0) {
                 updateSubmitButton();
             }
         });
