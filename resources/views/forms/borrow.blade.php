@@ -112,7 +112,7 @@
                                                     <!-- Description will be inserted here by JavaScript -->
                                                 </p>
                                                 <p class="mb-1 small">
-                                                    <span class="text-muted">Jumlah:</span>
+                                                    <span class="text-muted">Jumlah Tersedia:</span>
                                                     <span id="selectedToolAvailable" class="badge bg-info"></span>
                                                 </p>
                                                 <p class="mb-0 small">
@@ -437,7 +437,7 @@
                                         <i class="bi bi-tag"></i> ${tool.code || '-'}
                                     </span>
                                     <span class="me-2">
-                                        <i class="bi bi-box"></i> ${tool.quantity || 0}
+                                        <i class="bi bi-box"></i> stock: ${tool.current_quantity || 0}
                                     </span>
                                     <span>
                                         <i class="bi bi-geo-alt"></i> ${tool.current_locator || 'Unknown'}
@@ -445,7 +445,6 @@
                                 </div>
                                 ${tool.description ? `<p class="mb-1 small text-truncate" style="max-width: 300px;">${tool.description}</p>` : ''}
                             </div>
-                            <span class="badge bg-light text-dark ms-2">${tool.current_locator || '-'}</span>
                         </div>
                     </div>
                 </div>
@@ -487,7 +486,7 @@
                 // Update text content
                 selectedToolName.textContent = tool.name || 'No Name';
                 selectedToolCode.textContent = tool.code || '-';
-                selectedToolAvailable.textContent = tool.quantity || 0;
+                selectedToolAvailable.textContent = tool.current_quantity || 0;
                 selectedToolLocator.textContent = tool.current_locator || 'Unknown';
 
                 // Update image
@@ -702,7 +701,7 @@
 
             // Clear Cart
             clearCartBtn.addEventListener('click', function() {
-                if (cart.length > 0 && confirm('Clear all items from cart?')) {
+                if (cart.length > 0 && confirm('Kosongkan keranjang?')) {
                     cart = [];
                     updateCartDisplay();
                     showToast('Keranjang dibersihkan');

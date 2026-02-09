@@ -523,10 +523,7 @@
             </div>
             <div>
                 <span class="badge bg-success me-2">${engineer.shift || ''}</span>
-                <button type="button" class="btn btn-sm btn-outline-danger"
-                    onclick="clearSelectedEngineer()">
-                    <i class="bi bi-x"></i>
-                </button>
+
             </div>
         </div>
     `;
@@ -596,6 +593,7 @@
                                                 <i class="bi bi-box"></i> Stock: ${tool.current_quantity} |
                                                 <i class="bi bi-geo-alt"></i> ${tool.current_locator || 'Unknown'}
                                             </div>
+                                            ${tool.description ? `<p class="mb-1 small text-truncate" style="max-width: 300px;">${tool.description}</p>` : ''}
                                         </div>
                                     </div>
                                 </div>

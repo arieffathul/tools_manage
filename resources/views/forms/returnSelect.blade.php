@@ -122,11 +122,6 @@
                             <p class="text-muted mb-4">
                                 Semua peminjaman telah dikembalikan<br>atau tidak ada data peminjaman aktif.
                             </p>
-                            <div>
-                                <a href="{{ route('return.form') }}" class="btn btn-outline-secondary btn-sm">
-                                    <i class="bi bi-person-x me-1"></i> Tanpa Identitas
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
