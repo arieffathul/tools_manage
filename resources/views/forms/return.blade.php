@@ -220,87 +220,81 @@
                                         @endforeach
                                     </div>
                                 </div>
-
-                                <hr class="my-4">
-                                <h6 class="fw-semibold mb-3">Atau tambah tool manual:</h6>
-                            @endif
-
-                            <!-- Search Tool -->
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">
-                                    @if ($borrow)
-                                        Cari Tool Tambahan
-                                    @else
+                            @else
+                                <!-- Search Tool -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
                                         Cari Tool
-                                    @endif
-                                </label>
-                                <div class="position-relative">
-                                    <input type="text" class="form-control" id="toolSearch"
-                                        placeholder="Masukkan nama atau kode tool" autocomplete="off">
-                                    <div class="search-results position-absolute w-100 mt-1" id="toolResults"
-                                        style="display: none;"></div>
+                                    </label>
+                                    <div class="position-relative">
+                                        <input type="text" class="form-control" id="toolSearch"
+                                            placeholder="Masukkan nama atau kode tool" autocomplete="off">
+                                        <div class="search-results position-absolute w-100 mt-1" id="toolResults"
+                                            style="display: none;"></div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Selected Tool Card (Temporary) -->
-                            <div class="selected-tool-card rounded p-3 mb-3" id="selectedToolCard"
-                                style="display: none;">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <div>
-                                        <h6 class="mb-1" id="selectedToolName"></h6>
-                                        <div class="tool-info text-muted">
-                                            <small>
-                                                <i class="bi bi-tag"></i> Kode: <span id="selectedToolCode"></span> |
-                                                <i class="bi bi-box"></i> Stock: <span id="selectedToolStock"></span>
-                                                |
-                                                <i class="bi bi-geo-alt"></i> Lokasi: <span
-                                                    id="selectedToolLocator"></span>
-                                            </small>
+                                <!-- Selected Tool Card (Temporary) -->
+                                <div class="selected-tool-card rounded p-3 mb-3" id="selectedToolCard"
+                                    style="display: none;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <h6 class="mb-1" id="selectedToolName"></h6>
+                                            <div class="tool-info text-muted">
+                                                <small>
+                                                    <i class="bi bi-tag"></i> Kode: <span
+                                                        id="selectedToolCode"></span> |
+                                                    <i class="bi bi-box"></i> Stock: <span
+                                                        id="selectedToolStock"></span>
+                                                    |
+                                                    <i class="bi bi-geo-alt"></i> Lokasi: <span
+                                                        id="selectedToolLocator"></span>
+                                                </small>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                        onclick="clearSelectedTool()">
-                                        <i class="bi bi-x"></i>
-                                    </button>
-                                </div>
-
-                                <!-- Tool Image -->
-                                <div class="row mb-3" id="selectedToolImageRow" style="display: none;">
-                                    <div class="col-12">
-                                        <div id="selectedToolImageContainer"></div>
-                                    </div>
-                                </div>
-
-                                <!-- Quantity Input -->
-                                <div class="row align-items-center">
-                                    <div class="col-md-4">
-                                        <label class="form-label small fw-semibold">Jumlah Dikembalikan *</label>
-                                        <div class="input-group input-group-sm">
-                                            <button class="btn btn-outline-secondary" type="button"
-                                                onclick="decreaseToolQuantity()">
-                                                <i class="bi bi-dash"></i>
-                                            </button>
-                                            <input type="number" class="form-control text-center" id="toolQuantity"
-                                                value="1" min="1">
-                                            <button class="btn btn-outline-secondary" type="button"
-                                                onclick="increaseToolQuantity()">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label class="form-label small fw-semibold">Lokator *</label>
-                                        <input type="text" class="form-control form-control-sm" id="toolLocator"
-                                            placeholder="Lokasi penyimpanan" required>
-                                    </div>
-                                    <div class="col-md-3 d-flex align-items-end">
-                                        <button type="button" class="btn btn-success w-100" id="addToCartBtn">
-                                            <i class="bi bi-box-arrow-in-left me-1"></i> Simpan
+                                        <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="clearSelectedTool()">
+                                            <i class="bi bi-x"></i>
                                         </button>
                                     </div>
-                                </div>
-                            </div>
 
+                                    <!-- Tool Image -->
+                                    <div class="row mb-3" id="selectedToolImageRow" style="display: none;">
+                                        <div class="col-12">
+                                            <div id="selectedToolImageContainer"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quantity Input -->
+                                    <div class="row align-items-center">
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold">Jumlah Dikembalikan *</label>
+                                            <div class="input-group input-group-sm">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    onclick="decreaseToolQuantity()">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                                <input type="number" class="form-control text-center"
+                                                    id="toolQuantity" value="1" min="1">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    onclick="increaseToolQuantity()">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label class="form-label small fw-semibold">Locator *</label>
+                                            <input type="text" class="form-control form-control-sm"
+                                                id="toolLocator" placeholder="Lokasi penyimpanan" required>
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button type="button" class="btn btn-success w-100" id="addToCartBtn">
+                                                <i class="bi bi-box-arrow-in-left me-1"></i> Simpan
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <!-- Cart Items Container -->
                             <div id="cartContainer" style="min-height: 100px;">
                                 <div class="text-center text-muted py-5" id="emptyCart">
@@ -580,8 +574,8 @@
                                     ${tool.image ?
                                         `<img src="${tool.image}" alt="${tool.name}" class="tool-image-small">` :
                                         `<div class="tool-image-small bg-light d-flex align-items-center justify-content-center">
-                                                                            <i class="bi bi-tools text-muted"></i>
-                                                                        </div>`
+                                                                                        <i class="bi bi-tools text-muted"></i>
+                                                                                    </div>`
                                     }
                                 </div>
                                 <div class="flex-grow-1">
@@ -670,7 +664,7 @@
                 }
 
                 if (!toolLocator.value.trim()) {
-                    showToast('Harap isi lokator', 'error');
+                    showToast('Harap isi locator', 'error');
                     toolLocator.focus();
                     return;
                 }
@@ -706,53 +700,86 @@
                 cartItem.className = 'border rounded p-3 mb-2';
                 cartItem.id = `cart-item-${item.id}`;
                 cartItem.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div class="d-flex">
-                            <div class="flex-shrink-0 me-3">
-                                ${item.image ?
-                                    `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
-                                    `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
-                                                                        <i class="bi bi-tools text-muted"></i>
-                                                                    </div>`
-                                }
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${item.name}</h6>
-                                <div class="text-muted small">
-                                    <i class="bi bi-tag"></i> ${item.code} |
-                                    <i class="bi bi-geo-alt"></i> ${item.locator}
-                                </div>
-                                ${item.description ? `<small class="text-muted">${item.description}</small>` : ''}
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCartItem(${item.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex">
+                <div class="flex-shrink-0 me-3">
+                    ${item.image ?
+                        `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
+                        `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
+                                <i class="bi bi-tools text-muted"></i>
+                            </div>`
+                    }
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">${item.name}</h6>
+                    <div class="text-muted small">
+                        <i class="bi bi-tag"></i> ${item.code} |
+                        <i class="bi bi-geo-alt"></i> ${item.locator}
                     </div>
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="input-group input-group-sm" style="width: 140px;">
-                            <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, -1)">
-                                <i class="bi bi-dash"></i>
-                            </button>
-                            <input type="number" class="form-control text-center quantity-input"
-                                   value="${item.quantity}" min="1" max="${item.max_quantity}"
-                                   onchange="updateCartQuantity(${item.id}, 0, this.value)">
-                            <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, 1)">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        </div>
-                        <input type="file" class="form-control form-control-sm" style="width: 500px;"
-                               name="details[${cartIndex}][image]" accept="image/*" required>
-                    </div>
-                    <input type="hidden" name="details[${cartIndex}][tool_id]" value="${item.tool_id}">
-                    <input type="hidden" name="details[${cartIndex}][quantity]" value="${item.quantity}">
-                    <input type="hidden" name="details[${cartIndex}][locator]" value="${item.locator}">
-                `;
+                    ${item.description ? `<small class="text-muted">${item.description}</small>` : ''}
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCartItem(${item.id})">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+
+        <!-- FORM INPUTS FOR THIS ITEM -->
+        <div class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <label class="form-label small mb-1">Jumlah:</label>
+                <div class="input-group input-group-sm">
+                    <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, -1)">
+                        <i class="bi bi-dash"></i>
+                    </button>
+                    <input type="number" class="form-control text-center quantity-input"
+                           value="${item.quantity}" min="1" max="${item.max_quantity}"
+                           onchange="updateCartQuantity(${item.id}, 0, this.value)">
+                    <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, 1)">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small mb-1">Locator:</label>
+                <input type="text" class="form-control form-control-sm"
+                       id="locator-${item.id}"
+                       value="${item.locator}"
+                       placeholder="Lokasi pengembalian"
+                       onchange="updateCartLocator(${item.id}, this.value)">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small mb-1">Foto:</label>
+                <input type="file" class="form-control form-control-sm"
+                       name="details[${cartIndex}][image]"
+                       accept="image/*"
+                       required>
+            </div>
+        </div>
+
+        <!-- HIDDEN INPUTS FOR FORM SUBMISSION -->
+        <input type="hidden" name="details[${cartIndex}][tool_id]" value="${item.tool_id}">
+        <input type="hidden" name="details[${cartIndex}][quantity]" id="hidden-quantity-${item.id}" value="${item.quantity}">
+        <input type="hidden" name="details[${cartIndex}][locator]" id="hidden-locator-${item.id}" value="${item.locator}">
+    `;
 
                 cartContainer.appendChild(cartItem);
                 updateCartCounter();
-
             }
+            window.updateCartLocator = function(itemId, value) {
+                const index = cart.findIndex(item => item.id === itemId);
+                if (index === -1) return;
+
+                // update cart state
+                cart[index].locator = value;
+
+                // update hidden input
+                const hiddenInput = document.getElementById(`hidden-locator-${itemId}`);
+                if (hiddenInput) {
+                    hiddenInput.value = value;
+                }
+            };
+
 
             // Global cart functions
             window.updateCartQuantity = function(itemId, change, newValue = null) {
