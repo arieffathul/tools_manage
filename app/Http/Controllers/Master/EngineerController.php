@@ -72,9 +72,9 @@ class EngineerController extends Controller
      */
     public function edit(string $id)
     {
-        $engineer = Engineer::findOrFail($id);
+        // $engineer = Engineer::findOrFail($id);
 
-        return view('master.engineer.edit', compact('engineer'));
+        // return view('master.engineer.edit', compact('engineer'));
 
     }
 
@@ -95,9 +95,9 @@ class EngineerController extends Controller
 
                 $engineer->save();
 
-                return redirect()->route('engineer.index')->with('success', 'Engineer berhasil diupdate.');
+                return back()->with('success', 'Engineer berhasil diupdate.');
             } else {
-                return redirect()->route('engineer.index')->with('error', 'Engineer tidak ditemukan.');
+                return back()->with('error', 'Engineer tidak ditemukan.');
             }
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
@@ -145,9 +145,12 @@ class EngineerController extends Controller
 
             } else {
                 $response['message'] = 'Engineer tidak ditemukan.';
+
             }
+
+            return back()->with('success', 'Engineer berhasil dihapus.');
         } catch (Exception $e) {
-            $response['message'] = $e->getMessage();
+            return back()->with('error', 'Terjadi kesalahan: '.$e->getMessage());
         }
     }
 }

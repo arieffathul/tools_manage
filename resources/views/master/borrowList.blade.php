@@ -8,19 +8,7 @@
                 <div class="row align-items-center justify-content-between mb-3 g-2">
                     <h1>Kelola Tools</h1>
                     <div class="col-auto d-flex flex-wrap align-items-end gap-3">
-                        {{-- toggle prminjaman complete --}}
-                        <div>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a href="{{ route('borrow.index') }}"
-                                    class="btn {{ !$viewCompleted ? 'btn-secondary' : 'btn-outline-secondary' }}">
-                                    On Going
-                                </a>
-                                <a href="{{ route('borrow.index', ['is_completed' => 1]) }}"
-                                    class="btn {{ $viewCompleted ? 'btn-success' : 'btn-outline-success' }}">
-                                    Complete
-                                </a>
-                            </div>
-                        </div>
+
                         <div class="col-auto d-flex flex-wrap align-items-end gap-3">
                             {{-- toggle peminjaman complete --}}
                             <div>
