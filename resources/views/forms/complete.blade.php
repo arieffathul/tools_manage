@@ -89,10 +89,15 @@
                             </div>
                         @endif
 
-                        <!-- Action Buttons -->
                         <div class="d-grid gap-2 mt-4">
                             <a href="{{ route('borrow.form') }}" class="btn btn-primary">
-                                <i class="bi bi-plus-circle me-2"></i> Buat Peminjaman Baru
+                                <i class="bi bi-bag me-2"></i> Buat Peminjaman Baru
+                            </a>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{{ route('borrowReturn.select') }}" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i> Kembalikan Tools lain
                             </a>
                         </div>
                     </div>

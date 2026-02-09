@@ -320,7 +320,7 @@
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <button type="submit" class="btn btn-success w-100" id="submitBtn" disabled>
+                            <button type="submit" class="btn btn-success w-100" id="submitBtn">
                                 <i class="bi bi-check-circle me-1"></i> Simpan Pengembalian
                             </button>
                         </div>
@@ -405,12 +405,19 @@
             }
 
             function updateSubmitButton() {
-                const hasValidEngineer = selectedEngineerId.value !== '';
-                submitBtn.disabled = !(hasValidEngineer && cart.length > 0);
+                const hasValidEngineer =
+                    selectedEngineer !== null ||
+                    selectedEngineerId.value !== '';
+
+                // submitBtn.disabled = !(hasValidEngineer && cart.length > 0);
             }
 
+
+
             function updateCartCounter() {
-                cartCount.textContent = cart.length;
+                const count = cart.length;
+                cartCount.textContent = count;
+                console.log('Cart updated. Count:', count, 'Items:', cart); // Debug
             }
 
             // ==================== INITIALIZE FOR BORROW ====================
@@ -506,23 +513,23 @@
             function selectEngineer(engineer) {
                 console.log('Selecting engineer:', engineer);
 
-                selectedEngineer = engineer;
+                selectedEngineer = engineer; // <-- Ini harusnya mengatur
 
                 // Update card dengan innerHTML untuk memastikan element ada
                 selectedEngineerCard.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-1">${engineer.name}</h6>
-                        </div>
-                        <div>
-                            <span class="badge bg-success me-2">${engineer.shift || ''}</span>
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                onclick="clearSelectedEngineer()">
-                                <i class="bi bi-x"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="mb-1">${engineer.name}</h6>
+            </div>
+            <div>
+                <span class="badge bg-success me-2">${engineer.shift || ''}</span>
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                    onclick="clearSelectedEngineer()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        </div>
+    `;
 
                 selectedEngineerCard.style.display = 'block';
                 selectedEngineerId.value = engineer.id;
@@ -576,8 +583,8 @@
                                     ${tool.image ?
                                         `<img src="${tool.image}" alt="${tool.name}" class="tool-image-small">` :
                                         `<div class="tool-image-small bg-light d-flex align-items-center justify-content-center">
-                                                <i class="bi bi-tools text-muted"></i>
-                                            </div>`
+                                                                            <i class="bi bi-tools text-muted"></i>
+                                                                        </div>`
                                     }
                                 </div>
                                 <div class="flex-grow-1">
@@ -638,7 +645,8 @@
                 selectedTool = null;
                 selectedToolCard.style.display = 'none';
                 toolSearch.value = '';
-                showToast('Tool ditambahkan ke daftar');
+                toolResults.style.display = 'none';
+                // showToast('Tool ditambahkan ke daftar');
             }
 
             function decreaseToolQuantity() {
@@ -706,8 +714,8 @@
                                 ${item.image ?
                                     `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
                                     `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-tools text-muted"></i>
-                                        </div>`
+                                                                        <i class="bi bi-tools text-muted"></i>
+                                                                    </div>`
                                 }
                             </div>
                             <div class="flex-grow-1">
@@ -725,18 +733,18 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="input-group input-group-sm" style="width: 140px;">
-                            <button class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, -1)">
+                            <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, -1)">
                                 <i class="bi bi-dash"></i>
                             </button>
                             <input type="number" class="form-control text-center quantity-input"
                                    value="${item.quantity}" min="1" max="${item.max_quantity}"
                                    onchange="updateCartQuantity(${item.id}, 0, this.value)">
-                            <button class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, 1)">
+                            <button type="button" class="btn btn-outline-secondary" onclick="updateCartQuantity(${item.id}, 1)">
                                 <i class="bi bi-plus"></i>
                             </button>
                         </div>
-                        <input type="file" class="form-control form-control-sm" style="width: 150px;"
-                               name="details[${cartIndex}][image]" accept="image/*">
+                        <input type="file" class="form-control form-control-sm" style="width: 500px;"
+                               name="details[${cartIndex}][image]" accept="image/*" required>
                     </div>
                     <input type="hidden" name="details[${cartIndex}][tool_id]" value="${item.tool_id}">
                     <input type="hidden" name="details[${cartIndex}][quantity]" value="${item.quantity}">
@@ -744,6 +752,8 @@
                 `;
 
                 cartContainer.appendChild(cartItem);
+                updateCartCounter();
+
             }
 
             // Global cart functions
