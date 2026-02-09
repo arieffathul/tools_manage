@@ -45,7 +45,11 @@ class BorrowReturnController extends Controller
 
         // Jika ada borrow_id, ambil data peminjaman
         if ($request->has('borrow_id')) {
-            $borrow = Borrow::with(['engineer', 'borrowDetails.tool'])
+            $borrow = Borrow::with(['engineer', 'borrowDetails' => function ($query) {
+                // Jika viewCompleted false, hanya tampilkan borrow details yang belum complete
+                $query->where('is_complete', 0);
+                $query->with('tool');
+            }])
                 ->find($request->borrow_id);
 
             if ($borrow && ! $borrow->is_completed) {
@@ -113,6 +117,52 @@ class BorrowReturnController extends Controller
                 'notes' => $request->notes,
             ]);
 
+            // Jika ada borrow_id, update borrow details
+            if ($request->borrow_id) {
+                $borrow = Borrow::with('borrowDetails')->find($request->borrow_id);
+
+                if (! $borrow) {
+                    throw new \Exception('Data peminjaman tidak ditemukan');
+                }
+
+                // Update quantity di borrow details untuk setiap tool yang dikembalikan
+                foreach ($request->details as $returnDetail) {
+                    $borrowDetail = $borrow->borrowDetails
+                        ->where('tool_id', $returnDetail['tool_id'])
+                        ->first();
+
+                    $borrowDetail->decrementQuantity($returnDetail['quantity']);
+
+                }
+
+                // Cek apakah semua borrow details sudah complete
+                $allComplete = $borrow->borrowDetails->every(function ($detail) {
+                    return $detail->is_complete;
+                });
+
+                if ($allComplete) {
+                    $borrow->update([
+                        'is_completed' => 1,
+                        'completed_at' => now(),
+                    ]);
+                }
+            }
+
+            // if ($request->borrow_id) {
+            //     // Update status is_completed di Borrow jika semua BorrowDetails sudah complete
+            //     $borrow = Borrow::with('borrowDetails')->find($request->borrow_id);
+            //     foreach ($borrow->borrowDetails as $detail)
+            //     $allComplete = $borrow->borrowDetails->every(function ($detail) {
+            //         return $detail->is_complete;
+            //     });
+
+            //     if ($allComplete) {
+            //         $borrow->is_completed = 1;
+            //         $borrow->completed_at = now();
+            //         $borrow->save();
+            //     }
+            // }
+
             // Proses setiap detail
             foreach ($request->details as $index => $detail) {
                 // Handle image upload
@@ -151,15 +201,19 @@ class BorrowReturnController extends Controller
                     $tool->current_locator = $detail['locator'];
                     $tool->save();
                 }
+
             }
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengembalian berhasil dicatat.',
-                'redirect' => route('forms.complete'),
-            ]);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Pengembalian berhasil dicatat.',
+            //     'redirect' => route('forms.complete'),
+            // ]);
+            return redirect()
+                ->route('forms.complete')
+                ->with('success', 'Pengembalian berhasil dicatat.');
 
         } catch (\Exception $e) {
             DB::rollBack();

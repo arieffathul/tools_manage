@@ -30,36 +30,36 @@ class BorrowDetail extends Model
         return $this->hasMany(ReturnDetail::class);
     }
 
-    // public function decrementQuantity($amount)
-    // {
-    //     // Kurangi quantity
-    //     $this->quantity -= $amount;
+    public function decrementQuantity($amount)
+    {
+        // Kurangi quantity
+        $this->quantity -= $amount;
 
-    //     // Jika hasilnya minus, set ke 0
-    //     if ($this->quantity < 0) {
-    //         $this->quantity = 0;
+        // Jika hasilnya minus, set ke 0
+        if ($this->quantity < 0) {
+            $this->quantity = 0;
 
-    //         // Optional: Log warning
-    //         // \Log::warning("Tool {$this->name} (ID: {$this->id}) quantity set to 0 after decrement. Was negative.");
-    //     }
+            // Optional: Log warning
+            // \Log::warning("Tool {$this->name} (ID: {$this->id}) quantity set to 0 after decrement. Was negative.");
+        }
 
-    //     if ($this->quantity <= 0) {
-    //         $this->is_complete = 1;
-    //         $this->completed_at = now();
-    //     }
+        if ($this->quantity <= 0) {
+            $this->is_complete = 1;
+            $this->completed_at = now();
+        }
 
-    //     $this->save();
+        $this->save();
 
-    //     return $this->quantity; // Return final value
-    // }
+        return $this->quantity; // Return final value
+    }
 
-    // public function incrementQuantity($amount)
-    // {
-    //     // Tambah quantity
-    //     $this->quantity += $amount;
+    public function incrementQuantity($amount)
+    {
+        // Tambah quantity
+        $this->quantity += $amount;
 
-    //     $this->save();
+        $this->save();
 
-    //     return $this->quantity; // Return final value
-    // }
+        return $this->quantity; // Return final value
+    }
 }

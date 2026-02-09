@@ -411,7 +411,7 @@
             function updateCartCounter() {
                 const count = cart.length;
                 cartCount.textContent = count;
-                console.log('Cart updated. Count:', count, 'Items:', cart); // Debug
+                // console.log('Cart updated. Count:', count, 'Items:', cart); // Debug
             }
 
             // ==================== INITIALIZE FOR BORROW ====================
@@ -505,7 +505,7 @@
             });
 
             function selectEngineer(engineer) {
-                console.log('Selecting engineer:', engineer);
+                // console.log('Selecting engineer:', engineer);
 
                 selectedEngineer = engineer; // <-- Ini harusnya mengatur
 
@@ -574,8 +574,8 @@
                                     ${tool.image ?
                                         `<img src="${tool.image}" alt="${tool.name}" class="tool-image-small">` :
                                         `<div class="tool-image-small bg-light d-flex align-items-center justify-content-center">
-                                                                                        <i class="bi bi-tools text-muted"></i>
-                                                                                    </div>`
+                                                                                            <i class="bi bi-tools text-muted"></i>
+                                                                                        </div>`
                                     }
                                 </div>
                                 <div class="flex-grow-1">
@@ -706,8 +706,8 @@
                     ${item.image ?
                         `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
                         `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
-                                <i class="bi bi-tools text-muted"></i>
-                            </div>`
+                                    <i class="bi bi-tools text-muted"></i>
+                                </div>`
                     }
                 </div>
                 <div class="flex-grow-1">
