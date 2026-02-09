@@ -18,6 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@puredc.com',
             'password' => Hash::make('password'),
+            'role' => 'admin',
             // 'remember_token' => Str::random(10),
             'created_at' => now(),
             'updated_at' => now(),

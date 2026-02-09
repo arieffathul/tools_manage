@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class ToolsTableSeeder extends Seeder
+class ToolSeeder extends Seeder
 {
     public function run()
     {
