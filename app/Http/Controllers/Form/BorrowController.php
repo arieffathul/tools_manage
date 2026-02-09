@@ -70,7 +70,7 @@ class BorrowController extends Controller
         $engineers = Engineer::where('status', 'active')->get();
         $tools = Tool::all();
 
-        return view('master.borrowList  ', compact(
+        return view('master.borrowList', compact(
             'borrows',
             'viewCompleted',
             'engineers',

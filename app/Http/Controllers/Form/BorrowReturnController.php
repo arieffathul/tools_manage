@@ -27,7 +27,11 @@ class BorrowReturnController extends Controller
      */
     public function create()
     {
-        $borrow = Borrow::with(['engineer', 'borrowDetails.tool'])
+        $borrow = Borrow::with(['engineer', 'borrowDetails' => function ($query) {
+            // Jika viewCompleted false, hanya tampilkan borrow details yang belum complete
+            $query->where('is_complete', 0);
+            $query->with('tool');
+        }])
             ->where('is_completed', 0)
             ->get();
 
@@ -147,14 +151,6 @@ class BorrowReturnController extends Controller
                     $tool->current_locator = $detail['locator'];
                     $tool->save();
                 }
-
-                // // Log untuk debugging
-                // \Log::info('Return detail created:', [
-                //     'borrow_return_id' => $borrowReturn->id,
-                //     'tool_id' => $detail['tool_id'],
-                //     'quantity' => $detail['quantity'],
-                //     'locator' => $detail['locator'],
-                // ]);
             }
 
             DB::commit();
@@ -167,12 +163,6 @@ class BorrowReturnController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // \Log::error('Return store error:', [
-            //     'error' => $e->getMessage(),
-            //     'trace' => $e->getTraceAsString(),
-            //     'request' => $request->all(),
-            // ]);
 
             return response()->json([
                 'success' => false,

@@ -453,7 +453,7 @@
                         // Add click event listener
                         item.addEventListener('click', (event) => {
                             event.preventDefault();
-                            console.log('Tool clicked:', tool);
+                            // console.log('Tool clicked:', tool);
                             selectTool(tool);
                         });
 
@@ -472,7 +472,7 @@
                     return;
                 }
 
-                console.log('Selected tool object:', tool);
+                // console.log('Selected tool object:', tool);
 
                 // Check if tool has required properties
                 if (!tool.id) {

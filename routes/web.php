@@ -25,7 +25,8 @@ Route::middleware('admin')->group(function () {
     Route::patch('/engineer/{id}/activate', [EngineerController::class, 'activate'])
         ->name('engineer.activate');
     Route::resource('tool', ToolController::class);
-    Route::resource('borrow', BorrowController::class);
+    // Route::resource('borrow', BorrowController::class);
+    Route::get('borrow', [BorrowController::class, 'index'])->name('borrow.index');
     Route::patch('borrow/{id}/complete', [BorrowController::class, 'complete'])->name('borrow.complete');
 });
 
