@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Borrow;
+use App\Models\BorrowReturn;
+use App\Models\Tool;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -16,8 +20,22 @@ class DashboardController extends Controller
         $user = Auth::user();
         $role = $user->role ?? null;
         $name = $user->name;
-        $email = $user->email;
 
-        return view('master.dashboard', compact('role', 'name', 'email'));
+        $stats = [
+            'total_tools' => Tool::count(),
+            'active_borrows_count' => Borrow::where('is_completed', 0)->count(),
+
+            'unreturned_items_count' => DB::table('borrow_details')
+                ->join('borrows', 'borrow_details.borrow_id', '=', 'borrows.id')
+                ->where('borrows.is_completed', 0)
+                ->where('borrow_details.is_complete', 0)
+                ->sum('borrow_details.quantity'),
+            'today_returns' => BorrowReturn::whereDate('created_at', today())->count(),
+            // 'overdue_borrows' => Borrow::where('due_date', '<', now())
+            //     ->where('is_completed', 0)
+            //     ->count(),
+        ];
+
+        return view('master.dashboard', compact('role', 'name', 'stats'));
     }
 }

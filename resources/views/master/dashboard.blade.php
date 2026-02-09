@@ -31,22 +31,34 @@
                 <div class="row g-3">
                     <!-- Total Tools -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-start border-primary border-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <p class="text-muted mb-2">Total Tools</p>
-                                        <h3 class="fw-bold mb-0">156</h3>
-                                        <small class="text-success">
-                                            <i class="bi bi-arrow-up"></i> 12% dari bulan lalu
-                                        </small>
+                        <a href="{{ route('tool.index') }}" class="text-decoration-none">
+                            <div class="card border-start border-primary border-4 shadow-sm h-100 hover-shadow">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="text-muted mb-2">Total Jenis Tools</p>
+                                            <h3 class="fw-bold mb-0 text-dark">{{ $stats['total_tools'] }}</h3>
+                                            @if (isset($stats['total_tools_available']))
+                                                <small class="text-muted">
+                                                    {{ $stats['total_tools_available'] }} tersedia
+                                                </small>
+                                            @endif
+                                        </div>
+                                        <div class="bg-primary bg-opacity-10 p-2 rounded">
+                                            <i class="bi bi-tools text-primary fs-4"></i>
+                                        </div>
                                     </div>
-                                    <div class="bg-primary bg-opacity-10 p-2 rounded">
-                                        <i class="bi bi-tools text-primary fs-4"></i>
-                                    </div>
+                                    @if (isset($stats['total_tools_change']))
+                                        <div class="mt-2">
+                                            <small class="text-success">
+                                                <i class="bi bi-arrow-up"></i> {{ $stats['total_tools_change'] }} dari bulan
+                                                lalu
+                                            </small>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- Sedang Dipinjam -->
@@ -56,9 +68,9 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <p class="text-muted mb-2">Sedang Dipinjam</p>
-                                        <h3 class="fw-bold mb-0 text-warning">28</h3>
+                                        <h3 class="fw-bold mb-0 text-warning">{{ $stats['active_borrows_count'] }}</h3>
                                         <small class="text-muted">
-                                            18 belum kembali
+                                            {{ $stats['unreturned_items_count'] }} belum kembali
                                         </small>
                                     </div>
                                     <div class="bg-warning bg-opacity-10 p-2 rounded">
