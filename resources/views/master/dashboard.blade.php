@@ -63,43 +63,47 @@
 
                     <!-- Sedang Dipinjam -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-start border-warning border-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <p class="text-muted mb-2">Sedang Dipinjam</p>
-                                        <h3 class="fw-bold mb-0 text-warning">{{ $stats['active_borrows_count'] }}</h3>
-                                        <small class="text-muted">
-                                            {{ $stats['unreturned_items_count'] }} belum kembali
-                                        </small>
-                                    </div>
-                                    <div class="bg-warning bg-opacity-10 p-2 rounded">
-                                        <i class="bi bi-box-arrow-in-right text-warning fs-4"></i>
+                        <a href="{{ route('borrow.index') }}" class="text-decoration-none">
+                            <div class="card border-start border-warning border-4 shadow-sm h-100 hover-shadow">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="text-muted mb-2">Sedang Dipinjam</p>
+                                            <h3 class="fw-bold mb-0 text-warning">{{ $stats['active_borrows_count'] }}</h3>
+                                            <small class="text-muted">
+                                                {{ $stats['unreturned_items_count'] }} belum kembali
+                                            </small>
+                                        </div>
+                                        <div class="bg-warning bg-opacity-10 p-2 rounded">
+                                            <i class="bi bi-box-arrow-in-right text-warning fs-4"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- Pengembalian Hari Ini -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-start border-success border-4 shadow-sm h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <p class="text-muted mb-2">Pengembalian Hari Ini</p>
-                                        <h3 class="fw-bold mb-0 text-success">{{ $stats['today_returns'] }}</h3>
-                                        <small class="text-success">
-                                            <i class="bi bi-save"></i> {{ $stats['returned_items_count'] }} barang
-                                            dikembalikan
-                                        </small>
-                                    </div>
-                                    <div class="bg-success bg-opacity-10 p-2 rounded">
-                                        <i class="bi bi-box-arrow-left text-success fs-4"></i>
+                        <a href="{{ route('borrow.index', ['is_completed' => 1]) }}" class="text-decoration-none">
+                            <div class="card border-start border-success border-4 shadow-sm h-100 hover-shadow">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="text-muted mb-2">Pengembalian Hari Ini</p>
+                                            <h3 class="fw-bold mb-0 text-success">{{ $stats['today_returns'] }}</h3>
+                                            <small class="text-success">
+                                                <i class="bi bi-save"></i> {{ $stats['returned_items_count'] }} barang
+                                                dikembalikan
+                                            </small>
+                                        </div>
+                                        <div class="bg-success bg-opacity-10 p-2 rounded">
+                                            <i class="bi bi-box-arrow-left text-success fs-4"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- Telat Kembali -->
@@ -139,8 +143,53 @@
                                 </h5>
                             </div>
                             <div class="card-body p-3">
-                                <div style="height: 300px;">
+                                <div style="height: 90%;">
                                     <canvas id="weeklyChart"></canvas>
+                                </div>
+                                <div class="mt-5 justify-content-center d-flex">
+                                    {{-- <table class="table table-sm mt-3 table-bordered mb-5" style="width: 75%">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" class="table-secondary text-center" style="width: 50px;">
+                                                    No</th>
+                                                <th scope="col" class="table-secondary ps-3" style="width: 120px;">Hari
+                                                </th>
+                                                <th scope="col" class="table-secondary text-center" style="width: 80px;">
+                                                    Peminjaman</th>
+                                                <th scope="col" class="table-secondary text-center" style="width: 80px;">
+                                                    Pengembalian</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php $no = 1; @endphp
+                                            @for ($i = 6; $i >= 0; $i--)
+                                                @php
+                                                    $date = now()->subDays($i);
+                                                    $borrowCount = $chartData['borrow_data'][6 - $i] ?? 0;
+                                                    $returnCount = $chartData['return_data'][6 - $i] ?? 0;
+                                                    $isToday = $date->isToday();
+                                                @endphp
+                                                <tr class="{{ $isToday ? 'table-primary' : '' }}">
+                                                    <td class="text-center align-middle text-muted">{{ $no++ }}
+                                                    </td>
+                                                    <td class="ps-3">
+                                                        <div class="fw-semibold {{ $isToday ? 'text-primary' : '' }}">
+                                                            {{ $date->translatedFormat('l') }},
+                                                        </div>
+                                                        <small class="fw-medium {{ $isToday ? 'text-primary' : '' }}">
+                                                            {{ $date->format('d/m') }}
+                                                        </small>
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        {{ $borrowCount }}
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        {{ $returnCount }}
+                                                    </td>
+                                                </tr>
+                                            @endfor
+                                        </tbody>
+                                    </table> --}}
                                 </div>
                             </div>
                         </div>
@@ -240,131 +289,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tool Paling Sering Dipinjam -->
-                    <div class="col-xl-6">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white border-bottom">
-                                <h5 class="mb-0 fw-semibold">
-                                    <i class="bi bi-star-fill me-2 text-warning"></i>
-                                    Tool Paling Sering Dipinjam
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Nama Tool</th>
-                                                <th>Kode</th>
-                                                <th class="text-center">Total</th>
-                                                <th class="text-center">Rating</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @php
-                                                $popularTools = [
-                                                    [
-                                                        'name' => 'Multimeter Digital',
-                                                        'code' => 'MTD-001',
-                                                        'count' => 45,
-                                                        'rating' => 4.8,
-                                                    ],
-                                                    [
-                                                        'name' => 'Impact Wrench',
-                                                        'code' => 'IMP-023',
-                                                        'count' => 38,
-                                                        'rating' => 4.7,
-                                                    ],
-                                                    [
-                                                        'name' => 'Drill Machine',
-                                                        'code' => 'DRL-045',
-                                                        'count' => 32,
-                                                        'rating' => 4.5,
-                                                    ],
-                                                    [
-                                                        'name' => 'Thermal Camera',
-                                                        'code' => 'THC-012',
-                                                        'count' => 28,
-                                                        'rating' => 4.6,
-                                                    ],
-                                                    [
-                                                        'name' => 'Cable Tester',
-                                                        'code' => 'CBT-078',
-                                                        'count' => 25,
-                                                        'rating' => 4.3,
-                                                    ],
-                                                ];
-                                            @endphp
-                                            @foreach ($popularTools as $tool)
-                                                <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <i class="bi bi-tools text-primary me-2"></i>
-                                                            {{ $tool['name'] }}
-                                                        </div>
-                                                    </td>
-                                                    <td><code class="bg-light px-1 rounded">{{ $tool['code'] }}</code></td>
-                                                    <td class="text-center">
-                                                        <span class="badge bg-primary bg-opacity-10 text-primary">
-                                                            {{ $tool['count'] }}x
-                                                        </span>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span class="text-warning">{{ $tool['rating'] }}</span>
-                                                        <i class="bi bi-star-fill text-warning ms-1 small"></i>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="col-xl-6">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white border-bottom">
-                                <h5 class="mb-0 fw-semibold">
-                                    <i class="bi bi-lightning-fill me-2 text-info"></i>
-                                    Quick Actions
-                                </h5>
-                            </div>
-                            <div class="card-body p-3">
-                                <div class="row g-2">
-
-                                    <div class="col-md-6">
-                                        <a href="{{ route('tool.index') }}"
-                                            class="card border text-decoration-none h-100 hover-shadow">
-                                            <div class="card-body text-center p-3">
-                                                <div
-                                                    class="bg-warning bg-opacity-10 rounded-circle p-2 d-inline-block mb-2">
-                                                    <i class="bi bi-search text-warning fs-4"></i>
-                                                </div>
-                                                <h6 class="fw-semibold mb-1">Cari Tool</h6>
-                                                <p class="text-muted small mb-0">Cari dan kelola inventory</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <a href="{{ route('borrow.index') }}"
-                                            class="card border text-decoration-none h-100 hover-shadow">
-                                            <div class="card-body text-center p-3">
-                                                <div
-                                                    class="bg-danger bg-opacity-10 rounded-circle p-2 d-inline-block mb-2">
-                                                    <i class="bi bi-clock-history text-danger fs-4"></i>
-                                                </div>
-                                                <h6 class="fw-semibold mb-1">Monitor Telat</h6>
-                                                <p class="text-muted small mb-0">Lihat peminjaman yang telat</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -391,14 +315,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Grafik Tren Peminjaman
+            const chartData = @json($chartData);
+
             const ctx = document.getElementById('weeklyChart').getContext('2d');
             const weeklyChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                    labels: chartData.labels,
                     datasets: [{
                         label: 'Peminjaman',
-                        data: [12, 19, 15, 25, 22, 18, 10],
+                        data: chartData.borrowCounts,
                         borderColor: '#0d6efd',
                         backgroundColor: 'rgba(13, 110, 253, 0.1)',
                         borderWidth: 2,
@@ -406,7 +332,7 @@
                         tension: 0.3
                     }, {
                         label: 'Pengembalian',
-                        data: [8, 12, 10, 18, 15, 12, 5],
+                        data: chartData.returnCounts,
                         borderColor: '#198754',
                         backgroundColor: 'rgba(25, 135, 84, 0.1)',
                         borderWidth: 2,

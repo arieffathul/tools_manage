@@ -82,9 +82,9 @@ class ToolController extends Controller
      */
     public function edit(string $id)
     {
-        $tool = Tool::findOrFail($id);
+        // $tool = Tool::findOrFail($id);
 
-        return view('master.tool.edit', compact('tool'));
+        // return view('master.tool.edit', compact('tool'));
 
     }
 

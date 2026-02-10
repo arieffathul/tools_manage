@@ -82,7 +82,7 @@
                                                     <td style="min-width: 150px;">
                                                         <strong>{{ $tool->name }}</strong>
                                                     </td>
-                                                    <td style="min-width: 200px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                                    <td style="min-width: 200px; max-width: 200px; flex-wrap: wrap;"
                                                         title="{{ $tool->description }}">
                                                         {{ $tool->description ?? '-' }}
                                                     </td>
