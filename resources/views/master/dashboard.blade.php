@@ -87,10 +87,11 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <p class="text-muted mb-2">Dikembalikan Hari Ini</p>
-                                        <h3 class="fw-bold mb-0 text-success">15</h3>
+                                        <p class="text-muted mb-2">Pengembalian Hari Ini</p>
+                                        <h3 class="fw-bold mb-0 text-success">{{ $stats['today_returns'] }}</h3>
                                         <small class="text-success">
-                                            <i class="bi bi-check-circle"></i> 2 menunggu verifikasi
+                                            <i class="bi bi-save"></i> {{ $stats['returned_items_count'] }} barang
+                                            dikembalikan
                                         </small>
                                     </div>
                                     <div class="bg-success bg-opacity-10 p-2 rounded">

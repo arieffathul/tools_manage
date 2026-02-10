@@ -31,6 +31,11 @@ class DashboardController extends Controller
                 ->where('borrow_details.is_complete', 0)
                 ->sum('borrow_details.quantity'),
             'today_returns' => BorrowReturn::whereDate('created_at', today())->count(),
+
+            'returned_items_count' => DB::table('return_details')
+                ->join('borrow_returns', 'return_details.borrow_return_id', '=', 'borrow_returns.id')
+                ->whereDate('borrow_returns.created_at', today())
+                ->sum('return_details.quantity'),
             // 'overdue_borrows' => Borrow::where('due_date', '<', now())
             //     ->where('is_completed', 0)
             //     ->count(),
