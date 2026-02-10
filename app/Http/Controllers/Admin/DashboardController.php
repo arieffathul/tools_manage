@@ -132,7 +132,7 @@ class DashboardController extends Controller
             $activities->push([
                 'type' => 'return',
                 'id' => $return->id,
-                'name' => $return->returner->name ?? 'Unknown',
+                'name' => $return->returner?->name ?? 'Admin',
                 'job_reference' => $return->job_reference,
                 'time' => $return->created_at,
                 'icon' => 'bi-box-arrow-left',

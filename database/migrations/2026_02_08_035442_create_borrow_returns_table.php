@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('borrow_returns', function (Blueprint $table) {
             $table->id();
             $table->foreignId('borrow_id')->nullable()->constrained('borrows')->onDelete('cascade');
-            $table->foreignId('returner_id')->constrained('engineers')->onDelete('cascade');
+            $table->foreignId('returner_id')->nullable()->constrained('engineers')->onDelete('cascade');
             $table->string('job_reference')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
