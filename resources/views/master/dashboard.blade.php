@@ -143,7 +143,7 @@
                                 </h5>
                             </div>
                             <div class="card-body p-3">
-                                <div style="height: 90%;">
+                                <div style="height: 90%; min-height: 400px;">
                                     <canvas id="weeklyChart"></canvas>
                                 </div>
                                 <div class="mt-5 justify-content-center d-flex">
@@ -206,85 +206,37 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="list-group list-group-flush">
-                                    @php
-                                        $activities = [
-                                            [
-                                                'type' => 'return',
-                                                'name' => 'Budi Santoso',
-                                                'tool' => 'Impact Wrench',
-                                                'time' => 2,
-                                            ],
-                                            [
-                                                'type' => 'borrow',
-                                                'name' => 'Sari Dewi',
-                                                'tool' => 'Multimeter Digital',
-                                                'time' => 4,
-                                            ],
-                                            [
-                                                'type' => 'late',
-                                                'name' => 'Andi Wijaya',
-                                                'tool' => 'Drill Machine',
-                                                'time' => 6,
-                                            ],
-                                            [
-                                                'type' => 'return',
-                                                'name' => 'Rina Amelia',
-                                                'tool' => 'Socket Set',
-                                                'time' => 8,
-                                            ],
-                                            [
-                                                'type' => 'borrow',
-                                                'name' => 'Fajar Pratama',
-                                                'tool' => 'Thermal Camera',
-                                                'time' => 10,
-                                            ],
-                                            [
-                                                'type' => 'late',
-                                                'name' => 'Doni Saputra',
-                                                'tool' => 'Cable Tester',
-                                                'time' => 12,
-                                            ],
-                                        ];
-                                    @endphp
-                                    @foreach ($activities as $activity)
+                                    @foreach ($recentActivities as $activity)
                                         <div class="list-group-item border-0 py-3 px-3">
                                             <div class="d-flex">
-                                                <div class="shrink-0">
-                                                    @if ($activity['type'] === 'return')
-                                                        <i class="bi bi-box-arrow-left text-success fs-5"></i>
-                                                    @elseif($activity['type'] === 'borrow')
-                                                        <i class="bi bi-box-arrow-in-right text-primary fs-5"></i>
-                                                    @else
-                                                        <i class="bi bi-exclamation-triangle text-warning fs-5"></i>
-                                                    @endif
+                                                <div class="flex-shrink-0">
+                                                    <i
+                                                        class="bi {{ $activity['icon'] }} text-{{ $activity['color'] }} fs-5"></i>
                                                 </div>
-                                                <div class="grow ms-3">
-                                                    <h6 class="mb-1">
-                                                        @if ($activity['type'] === 'return')
-                                                            Pengembalian Tool
-                                                        @elseif($activity['type'] === 'borrow')
-                                                            Peminjaman Baru
-                                                        @else
-                                                            Peringatan Telat
-                                                        @endif
-                                                    </h6>
-                                                    <p class="text-muted small mb-1">
-                                                        <strong>{{ $activity['name'] }}</strong>
-                                                        @if ($activity['type'] === 'return')
-                                                            mengembalikan {{ $activity['tool'] }}
-                                                        @elseif($activity['type'] === 'borrow')
-                                                            meminjam {{ $activity['tool'] }}
-                                                        @else
-                                                            telat mengembalikan {{ $activity['tool'] }}
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="mb-1">{{ $activity['title'] }}</h6>
+                                                    <p class="text-muted mb-1">
+                                                        {{ $activity['name'] }}
+                                                        {{ $activity['description'] }}
+                                                        @if ($activity['job_reference'])
+                                                            untuk pekerjaan
+                                                            <strong>{{ $activity['job_reference'] }}</strong>
                                                         @endif
                                                     </p>
                                                     <small class="text-muted">
-                                                        {{ now()->subHours($activity['time'])->locale('id')->diffForHumans() }}
+                                                        {{ \Carbon\Carbon::parse($activity['time'])->locale('id')->diffForHumans() }}
                                                     </small>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
+
+                                    @if ($recentActivities->isEmpty())
+                                        <div class="list-group-item border-0 py-4 text-center text-muted">
+                                            <i class="bi bi-inbox fs-1 mb-2 opacity-50"></i>
+                                            <p class="mb-0">Belum ada aktivitas</p>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
