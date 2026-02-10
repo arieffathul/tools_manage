@@ -68,10 +68,11 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <p class="text-muted mb-2">Sedang Dipinjam</p>
+                                            <p class="text-muted mb-2">Peminjaman Berlangsung</p>
                                             <h3 class="fw-bold mb-0 text-warning">{{ $stats['active_borrows_count'] }}</h3>
-                                            <small class="text-muted">
-                                                {{ $stats['unreturned_items_count'] }} belum kembali
+                                            <small class="text-warning">
+                                                <i class="bi bi-bag me-1"></i>
+                                                {{ $stats['unreturned_items_count'] }} barang dipinjam
                                             </small>
                                         </div>
                                         <div class="bg-warning bg-opacity-10 p-2 rounded">
@@ -271,25 +272,25 @@
 
             const ctx = document.getElementById('weeklyChart').getContext('2d');
             const weeklyChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: chartData.labels,
                     datasets: [{
                         label: 'Peminjaman',
                         data: chartData.borrowCounts,
-                        borderColor: '#0d6efd',
-                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
+                        backgroundColor: '#0d6efd',
+                        borderColor: '#0b5ed7',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
                     }, {
                         label: 'Pengembalian',
                         data: chartData.returnCounts,
-                        borderColor: '#198754',
-                        backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.3
+                        backgroundColor: '#198754',
+                        borderColor: '#157347',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
                     }]
                 },
                 options: {
@@ -302,7 +303,22 @@
                     },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    if (Number.isInteger(value)) {
+                                        return value;
+                                    }
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }

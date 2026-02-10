@@ -66,7 +66,8 @@ class DashboardController extends Controller
 
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i);
-            $dateRange[] = $date->format('Y-m-d');
+            $dateKey = $date->format('Y-m-d');
+            $dateRange[$dateKey] = 0;
             $labels[] = $date->translatedFormat('l');
         }
 
@@ -85,6 +86,15 @@ class DashboardController extends Controller
             ->get()
             ->pluck('count', 'date')
             ->toArray();
+
+        // dd([
+        //     'dateRange' => $dateRange,
+        //     'labels' => $labels,
+        //     'borrowData' => $borrowData,
+        //     'returnData' => $returnData,
+        //     'dateRange_type' => gettype($dateRange),
+        //     'borrowData_type' => gettype($borrowData),
+        // ]);
 
         $borrowCounts = [];
         $returnCounts = [];
