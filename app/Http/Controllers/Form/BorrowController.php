@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Form;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Borrow\StoreBorrowRequest;
 use App\Models\Borrow;
+use App\Models\BorrowReturn;
 use App\Models\Engineer;
+use App\Models\ReturnDetail;
 use App\Models\Tool;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BorrowController extends Controller
 {
@@ -210,24 +213,71 @@ class BorrowController extends Controller
     // BorrowController.php
     public function complete(string $id)
     {
-        // Update status menjadi selesai
-        $borrow = Borrow::findOrFail($id);
+        DB::beginTransaction();
 
-        $borrow->update([
-            'is_completed' => 1,
-            'completed_at' => now(), // Jika ada kolom returned_at
-        ]);
+        try {
+            $borrow = Borrow::with(['engineer', 'borrowDetails.tool'])->findOrFail($id);
 
-        // Optional: Kembalikan stok tools
-        foreach ($borrow->borrowDetails as $detail) {
-            if ($detail->tool) {
-                // Increment current_quantity saat dikembalikan
-                $detail->tool->incrementQuantity($detail['quantity']);
+            // Validasi: jangan complete yang sudah complete
+            if ($borrow->is_completed) {
+                return back()->with('error', 'Peminjaman sudah selesai.');
             }
+
+            // 1. Update borrow status
+            $borrow->update([
+                'is_completed' => 1,
+                'completed_at' => now(),
+            ]);
+
+            // 2. Buat BorrowReturn record dengan returner_id null (admin)
+            $borrowReturn = BorrowReturn::create([
+                'borrow_id' => $borrow->id,
+                'returner_id' => null, // ← ADMIN
+                'job_reference' => $borrow->job_reference,
+                'notes' => 'Ditandai selesai oleh sistem/admin',
+            ]);
+
+            // 3. Proses setiap item
+            foreach ($borrow->borrowDetails as $detail) {
+                // Increment stock tool jika belum complete
+                if (! $detail->is_complete && $detail->tool) {
+                    $detail->tool->incrementQuantity($detail->quantity);
+
+                    // Update locator (optional)
+                    if ($detail->tool->locator) {
+                        $detail->tool->current_locator = $detail->tool->locator;
+                        $detail->tool->save();
+                    }
+                }
+
+                // Buat ReturnDetail record
+                ReturnDetail::create([
+                    'borrow_return_id' => $borrowReturn->id,
+                    'tool_id' => $detail->tool_id,
+                    'quantity' => $detail->quantity,
+                    'image' => null,
+                    'locator' => $detail->tool->current_locator ?? $detail->tool->locator ?? 'Default',
+                ]);
+
+                // Mark borrow detail as complete jika belum
+                if (! $detail->is_complete) {
+                    $detail->update([
+                        'is_complete' => 1,
+                        'completed_at' => now(),
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'Peminjaman berhasil ditandai sebagai selesai.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // \Log::error('Complete borrow error: '.$e->getMessage());
+
+            return back()->with('error', 'Gagal: '.$e->getMessage());
         }
-
-        return back()->with('success', 'Peminjaman berhasil ditandai sebagai selesai.');
-
     }
 
     /**
