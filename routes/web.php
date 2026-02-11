@@ -23,28 +23,16 @@ Route::middleware('admin')->group(function () {
     // dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-<<<<<<< HEAD
-    // engineer management
-=======
     // Kelola engineer
->>>>>>> 12744e96c540e4fd404fa71dd4b87e99c71d448d
     Route::resource('engineer', EngineerController::class);
     Route::patch('engineer/{id}/inactive', [EngineerController::class, 'inactive'])->name('engineer.inactive');
     Route::patch('/engineer/{id}/activate', [EngineerController::class, 'activate'])
         ->name('engineer.activate');
 
-<<<<<<< HEAD
-    // tool management
-    Route::resource('tool', ToolController::class);
-    // Route::resource('borrow', BorrowController::class);
-
-    // borrow management
-=======
     // Kelola tool
     Route::resource('tool', ToolController::class);
 
     // Kelola borrow
->>>>>>> 12744e96c540e4fd404fa71dd4b87e99c71d448d
     Route::get('borrow', [BorrowController::class, 'index'])->name('borrow.index');
     Route::patch('borrow/{id}/complete', [BorrowController::class, 'complete'])->name('borrow.complete');
 
