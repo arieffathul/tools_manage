@@ -33,6 +33,11 @@ class Tool extends Model
         return $this->hasMany(ReturnDetail::class);
     }
 
+    public function brokenTools()
+    {
+        return $this->hasMany(BrokenTool::class);
+    }
+
     public function decrementQuantity($amount)
     {
         // Kurangi current_quantity

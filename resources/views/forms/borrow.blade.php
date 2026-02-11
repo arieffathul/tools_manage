@@ -146,7 +146,7 @@
                     <!-- Cart Section -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 fw-bold">3. Daftar Tools Dipinjam</h6>
+                            <h6 class="mb-0 fw-bold">Daftar Tools Dipinjam</h6>
                             <div>
                                 <span class="badge bg-primary" id="cartCount">0</span>
                                 <button type="button" class="btn btn-sm btn-outline-danger ms-2" id="clearCart"
@@ -169,7 +169,7 @@
                     <!-- Additional Information -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0 fw-bold">4. Informasi Tambahan</h6>
+                            <h6 class="mb-0 fw-bold">Informasi Tambahan</h6>
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
@@ -424,8 +424,8 @@
                         ${tool.image ?
                             `<img src="${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                             `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                                                                                                                                                                        <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                                                                                                                                                                    </div>`
+                                                                                                                                                                                                                                                                                    <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                                                                                                                                                </div>`
                         }
                     </div>
                     <div class="flex-grow-1">
@@ -615,8 +615,8 @@
                 ${item.image ?
                     `<img src="${item.image}" alt="${item.name}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">` :
                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                                                                                                                                                                <i class="bi bi-tools text-muted"></i>
-                                                                                                                                                                                            </div>`
+                                                                                                                                                                                                            <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                                        </div>`
                 }
             </div>
             <div class="flex-grow-1">

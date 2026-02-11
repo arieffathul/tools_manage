@@ -100,7 +100,7 @@
                     <!-- Informasi Pengembalian -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0 fw-bold">1. Informasi Pengembalian</h6>
+                            <h6 class="mb-0 fw-bold">Informasi Pengembalian</h6>
                         </div>
                         <div class="card-body">
                             @if ($borrow)
@@ -172,7 +172,7 @@
                     <!-- Tools yang Dikembalikan -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0 fw-bold">2. Tools yang Dikembalikan</h6>
+                            <h6 class="mb-0 fw-bold">Tools yang Dikembalikan</h6>
                             <div>
                                 <span class="badge bg-primary" id="cartCount">0</span>
                             </div>
@@ -568,8 +568,8 @@
                                 ${tool.image ?
                                     `<img src="${tool.image}" alt="${tool.name}" class="tool-image-small">` :
                                     `<div class="tool-image-small bg-light d-flex align-items-center justify-content-center">
-                                                                                                                                                                                                        <i class="bi bi-tools text-muted"></i>
-                                                                                                                                                                                                    </div>`
+                                                                                                                                                                                                            <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                                        </div>`
                                 }
                             </div>
                             <div class="flex-grow-1">
@@ -723,8 +723,8 @@
                 ${item.image ?
                     `<img src="${item.image}" alt="${item.name}" class="tool-image-small rounded">` :
                     `<div class="tool-image-small bg-light rounded d-flex align-items-center justify-content-center">
-                                                                                                                                                <i class="bi bi-tools text-muted"></i>
-                                                                                                                                            </div>`
+                                                                                                                                                    <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                </div>`
                 }
             </div>
             <div class="flex-grow-1">
