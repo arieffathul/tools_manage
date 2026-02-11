@@ -96,8 +96,14 @@
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <a href="{{ route('borrowReturn.select') }}" class="btn btn-primary">
-                                <i class="bi bi-save me-2"></i> Kembalikan Tools lain
+                            <a href="{{ route('borrowReturn.select') }}" class="btn btn-success">
+                                <i class="bi bi-save me-2"></i> Kembalikan Tools
+                            </a>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <a href="{{ route('broken.select') }}" class="btn btn-danger">
+                                <i class="bi bi-exclamation-triangle me-2"></i> Laporkan Broken Tool
                             </a>
                         </div>
                     </div>

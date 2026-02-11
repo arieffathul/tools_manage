@@ -92,7 +92,7 @@
                                 <div class="mb-2">
                                     <small class="text-muted">Dilaporkan oleh:</small>
                                     <p class="mb-0 fw-medium">
-                                        {{ $item->reportedBy->name ?? '-' }}
+                                        {{ $item->reporter->name ?? '-' }}
                                     </p>
                                 </div>
 
@@ -101,7 +101,7 @@
                                     <div class="mb-2">
                                         <small class="text-muted">Ditangani oleh:</small>
                                         <p class="mb-0 fw-medium">
-                                            {{ $item->handledBy->name ?? '-' }}
+                                            {{ $item->handler->name ?? '-' }}
                                         </p>
                                     </div>
                                 @endif

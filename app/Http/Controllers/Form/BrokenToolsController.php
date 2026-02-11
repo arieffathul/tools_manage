@@ -22,7 +22,9 @@ class BrokenToolsController extends Controller
 
     public function select()
     {
-        $brokenTools = BrokenTool::with(['tool', 'engineer'])->whereNot('status', 'resolved')->get();
+        $brokenTools = BrokenTool::with(['tool', 'reporter', 'handler'])
+            ->whereNot('status', 'resolved')
+            ->get();
 
         return view('forms.brokenSelect', compact('brokenTools'));
     }
@@ -65,7 +67,7 @@ class BrokenToolsController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('broken.form')
+                ->route('forms.complete')
                 ->with('success', 'Laporan alat rusak berhasil disimpan.');
 
         } catch (\Exception $e) {
@@ -131,7 +133,7 @@ class BrokenToolsController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('broken.form')
+                ->route('forms.complete')
                 ->with('success', 'Laporan alat rusak berhasil diperbarui.');
 
         } catch (\Exception $e) {

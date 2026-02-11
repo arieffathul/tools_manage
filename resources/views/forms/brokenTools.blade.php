@@ -27,6 +27,9 @@
                         </h1>
                         <p class="text-muted mb-0 small">Laporakan alat yang rusak untuk ditindaklanjuti</p>
                     </div>
+                    <a href="{{ route('broken.select') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left me-1"></i>
+                    </a>
                 </div>
 
                 <form id="brokenForm"
@@ -626,8 +629,8 @@
                                 ${tool.image ?
                                     `<img src="/storage/${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                        <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                    </div>`
+                                                                                                                        <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                    </div>`
                                 }
                             </div>
                             <div class="flex-grow-1">
@@ -785,7 +788,7 @@
         });
 
         // Make selectedTool global for validation
-        window.selectedTool = selectedTool;
+        // window.selectedTool = selectedTool;
 
         // ==================== TOGGLE RESOLVED FIELDS ====================
         function toggleResolvedFields() {
@@ -920,7 +923,7 @@
             }
 
             // Quantity validation
-            if (parseInt(quantity) > availableQty) {
+            if (parseInt(quantity) > parseInt(availableQty)) {
                 event.preventDefault();
                 alert(`Jumlah rusak (${quantity}) tidak boleh melebihi jumlah tersedia (${availableQty})`);
                 return;

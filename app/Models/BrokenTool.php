@@ -29,4 +29,14 @@ class BrokenTool extends Model
     {
         return $this->belongsTo(Tool::class);
     }
+
+    public function reporter()
+    {
+        return $this->belongsTo(Engineer::class, 'reported_by');
+    }
+
+    public function handler()
+    {
+        return $this->belongsTo(Engineer::class, 'handled_by');
+    }
 }
