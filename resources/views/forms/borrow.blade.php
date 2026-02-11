@@ -30,7 +30,7 @@
                     <!-- Engineer Selection -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0 fw-bold">1. Pilih Engineer dan Pekerjaan</h6>
+                            <h6 class="mb-0 fw-bold">Pilih Engineer dan Pekerjaan</h6>
                         </div>
                         <div class="card-body">
                             <div class="mb-2">
@@ -74,7 +74,7 @@
                     <!-- Tool Selection -->
                     <div class="card shadow-sm mb-3">
                         <div class="card-header bg-light">
-                            <h6 class="mb-0 fw-bold">2. Pilih Tools</h6>
+                            <h6 class="mb-0 fw-bold">Pilih Tools</h6>
                         </div>
                         <div class="card-body">
                             <div class="mb-2">
@@ -424,8 +424,8 @@
                         ${tool.image ?
                             `<img src="${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                             `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                                                                                                                                                                                    <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                                                                                                                                                                                </div>`
+                                                                                                                                                                                                                                                                                <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                                                                                                                                            </div>`
                         }
                     </div>
                     <div class="flex-grow-1">
@@ -615,8 +615,8 @@
                 ${item.image ?
                     `<img src="${item.image}" alt="${item.name}" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">` :
                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                                                                                                                                                                                            <i class="bi bi-tools text-muted"></i>
-                                                                                                                                                                                                        </div>`
+                                                                                                                                                                                                        <i class="bi bi-tools text-muted"></i>
+                                                                                                                                                                                                    </div>`
                 }
             </div>
             <div class="flex-grow-1">
