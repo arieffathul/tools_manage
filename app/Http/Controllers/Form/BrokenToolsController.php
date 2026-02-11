@@ -20,6 +20,13 @@ class BrokenToolsController extends Controller
         //
     }
 
+    public function select()
+    {
+        $brokenTools = BrokenTool::with(['tool', 'engineer'])->whereNot('status', 'resolved')->get();
+
+        return view('forms.brokenSelect', compact('brokenTools'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -82,13 +89,16 @@ class BrokenToolsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(string $id)
     {
         $brokenTool = BrokenTool::with('tool')->findOrFail($id);
         $tools = Tool::all();
         $engineers = Engineer::where('status', 'active')->get();
 
-        return view('forms.editBrokenTools', compact('brokenTool', 'tools', 'engineers'));
+        return view('forms.brokenTools', compact('brokenTool', 'tools', 'engineers'));
     }
 
     /**

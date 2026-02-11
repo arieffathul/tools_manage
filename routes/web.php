@@ -55,6 +55,8 @@ Route::post('form/return/submit', [BorrowReturnController::class, 'store'])
     ->name('return.store');
 
 // form broken tools
+Route::get('form/select-broken', [BrokenToolsController::class, 'select'])
+    ->name('broken.select');
 Route::get('form/broken', [BrokenToolsController::class, 'create'])->name('broken.form');
 Route::post('form/broken/submit', [BrokenToolsController::class, 'store'])->name('broken.store');
 Route::get('form/broken/{id}/edit', [BrokenToolsController::class, 'edit'])->name('broken.edit');
