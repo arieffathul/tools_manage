@@ -234,7 +234,7 @@
                                                                                 id="quantity{{ $tool->id }}"
                                                                                 name="quantity"
                                                                                 value="{{ $tool->quantity }}"
-                                                                                min="1" required>
+                                                                                min="0" required>
                                                                         </div>
 
                                                                     </div>
@@ -334,7 +334,7 @@
                             <div class="mb-3">
                                 <label for="quantity" class="form-label">Quantity*</label>
                                 <input type="number" class="form-control" id="quantity" name="quantity"
-                                    value="{{ old('quantity', 1) }}" min="1" required>
+                                    value="{{ old('quantity', 1) }}" min="0" required>
                             </div>
                             {{-- Locator --}}
                             <div class="mb-3">

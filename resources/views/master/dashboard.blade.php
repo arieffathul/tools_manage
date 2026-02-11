@@ -13,10 +13,10 @@
                             <i class="bi bi-bar-chart-line-fill me-2 text-secondary"></i>Dashboard Admin
                         </h3>
                         <p class="text-muted mb-0">
-                            Hai <strong>{{ Auth::user()->name }}</strong>, Pantau aktivitas peminjaman tools STO03</p>
+                            Pantau aktivitas peminjaman tools STO03</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge bg-light text-secondary border">
+                        <span class="badge bg-light text-secondary border" style="font-size: 15px;">
                             <i class="bi bi-calendar-event me-1"></i>
                             {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM Y') }}
                         </span>
@@ -120,7 +120,7 @@
                                         </small>
                                     </div>
                                     <div class="bg-danger bg-opacity-10 p-2 rounded">
-                                        <i class="bi bi-clock-history text-danger fs-4"></i>
+                                        <i class="bi bi-exclamation-circle text-danger fs-4"></i>
                                     </div>
                                 </div>
                             </div>
