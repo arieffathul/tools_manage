@@ -19,19 +19,11 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        $viewCompleted = request('is_completed') == 1;
+        // $viewCompleted = request('is_completed') == 1;
 
-        $query = Borrow::with(['engineer', 'borrowDetails' => function ($query) use ($viewCompleted) {
-            // Jika viewCompleted false, hanya tampilkan borrow details yang belum complete
-            if (! $viewCompleted) {
-                $query->where('is_complete', 0);
-            }
-            $query->with('tool');
-        }])->when($viewCompleted, function ($q) {
-            return $q->where('is_completed', 1);
-        }, function ($q) {
-            return $q->where('is_completed', 0);
-        });
+        $query = Borrow::with(['engineer', 'borrowDetails' => function ($query) {
+            $query->where('is_complete', 0)->with('tool');
+        }])->where('is_completed', 0);
 
         // Filter by engineer
         if (request('engineer_id')) {
@@ -75,7 +67,6 @@ class BorrowController extends Controller
 
         return view('master.borrowList', compact(
             'borrows',
-            'viewCompleted',
             'engineers',
             'tools'
         ));
@@ -234,7 +225,7 @@ class BorrowController extends Controller
                 'borrow_id' => $borrow->id,
                 'returner_id' => null, // ← ADMIN
                 'job_reference' => $borrow->job_reference,
-                'notes' => 'Ditandai selesai oleh sistem/admin',
+                'notes' => 'Ditandai selesai oleh   admin',
             ]);
 
             // 3. Proses setiap item

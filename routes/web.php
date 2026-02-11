@@ -19,15 +19,25 @@ Route::post('/login', [LoginController::class,  'login'])->name('login');
 Route::post('/logout', [LoginController::class,  'logout'])->name('logout');
 
 Route::middleware('admin')->group(function () {
+    // dashboard
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // engineer management
     Route::resource('engineer', EngineerController::class);
     Route::patch('engineer/{id}/inactive', [EngineerController::class, 'inactive'])->name('engineer.inactive');
     Route::patch('/engineer/{id}/activate', [EngineerController::class, 'activate'])
         ->name('engineer.activate');
+
+    // tool management
     Route::resource('tool', ToolController::class);
     // Route::resource('borrow', BorrowController::class);
+
+    // borrow management
     Route::get('borrow', [BorrowController::class, 'index'])->name('borrow.index');
     Route::patch('borrow/{id}/complete', [BorrowController::class, 'complete'])->name('borrow.complete');
+
+    // return management
+    Route::get('return', [BorrowReturnController::class, 'index'])->name('return.index');
 });
 
 Route::get('form/borrow', [BorrowController::class, 'form'])->name('borrow.form');

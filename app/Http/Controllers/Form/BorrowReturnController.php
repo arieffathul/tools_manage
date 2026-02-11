@@ -19,7 +19,47 @@ class BorrowReturnController extends Controller
      */
     public function index()
     {
-        //
+        $query = BorrowReturn::with(['returner', 'borrow.engineer', 'returnDetails.tool']);
+
+        // Filter by returner
+        if (request('returner_id')) {
+            $query->where('returner_id', request('returner_id'));
+        }
+
+        // Filter by original borrower
+        if (request('engineer_id')) {
+            $query->whereHas('borrow', function ($q) {
+                $q->where('engineer_id', request('engineer_id'));
+            });
+        }
+
+        // Filter by tool
+        if (request('tool_id')) {
+            $query->whereHas('returnDetails', function ($q) {
+                $q->where('tool_id', request('tool_id'));
+            });
+        }
+
+        // Filter by job reference
+        if (request('job_reference')) {
+            $query->where('job_reference', 'like', '%'.request('job_reference').'%');
+        }
+
+        // Filter by date range
+        if (request('start_date')) {
+            $query->whereDate('created_at', '>=', request('start_date'));
+        }
+        if (request('end_date')) {
+            $query->whereDate('created_at', '<=', request('end_date'));
+        }
+
+        $returns = $query->latest()->paginate(20);
+
+        $engineers = Engineer::where('status', 'active')->get();
+        $tools = Tool::all();
+        $returners = Engineer::where('status', 'active')->get(); // Sama atau beda?
+
+        return view('master.returnList', compact('returns', 'engineers', 'tools', 'returners'));
     }
 
     /**

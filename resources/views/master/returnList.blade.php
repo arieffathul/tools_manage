@@ -1,15 +1,15 @@
 @extends('layouts.app')
 @php
     $currentPage = 'borrowList';
-    $viewCompleted = false;
+    $viewCompleted = true;
 @endphp
-@section('title', 'Peminjaman | Tools Management')
+@section('title', 'Pengembalian | Tools Management')
 @section('content')
     <main class="app-main">
         <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
                 <div class="row align-items-center justify-content-between mb-3 g-2">
-                    <h1>Kelola Peminjaman</h1>
+                    <h1>Riwayat Pengembalian</h1>
                     <div class="col-auto d-flex flex-wrap align-items-end gap-3">
 
                         <div class="col-auto d-flex flex-wrap align-items-end gap-3">
@@ -29,100 +29,82 @@
                         </div>
 
                         <div class="col-12 mt-3">
-                            <form action="{{ route('borrow.index') }}" method="GET" id="filterForm">
-                                {{-- @if (request('is_completed'))
-                                    <input type="hidden" name="is_completed" value="{{ request('is_completed') }}">
-                                @endif --}}
+    <form action="{{ route('borrow.index') }}" method="GET" id="filterForm">
+        <div class="row g-2 align-items-end">
+            <!-- Engineer Filter -->
+            <div class="col-md-2">
+                <label class="form-label mb-1 small">Engineer</label>
+                <div class="position-relative">
+                    <input type="text" class="form-control form-control-sm" name="engineer_search"
+                           placeholder="Cari engineer..." value="{{ request('engineer_search') }}">
+                    <input type="hidden" name="engineer_id" value="{{ request('engineer_id') }}">
+                </div>
+            </div>
 
-                                <div class="row g-2 align-items-end">
-                                    <!-- Filter items dengan ukuran berbeda -->
-                                    <div class="col-md-2 ">
-                                        <label class="form-label mb-1 small">Engineer</label>
-                                        <div class="position-relative">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control pe-5" name="engineer_search"
-                                                    placeholder="Cari Engineer" autocomplete="off">
-                                                <input type="hidden" name="engineer_id"
-                                                    value="{{ request('engineer_id') }}">
-                                                <button type="button"
-                                                    class="btn btn-outline-secondary search-clear-btn position-absolute end-0 h-100"
-                                                    style="display: none; border: 1px solid #ced4da; border-left: none; z-index: 5; background: white;">
-                                                    <i class="bi bi-x"></i>
-                                                </button>
-                                            </div>
-                                            <div class="position-absolute w-100 bg-white border border-top-0 rounded-bottom shadow-sm"
-                                                style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none; margin-top: -1px;"
-                                                id="engineer-results"></div>
-                                        </div>
-                                    </div>
+            <!-- Tool Filter -->
+            <div class="col-md-2">
+                <label class="form-label mb-1 small">Tool</label>
+                <div class="position-relative">
+                    <input type="text" class="form-control form-control-sm" name="tool_search"
+                           placeholder="Cari tool..." value="{{ request('tool_search') }}">
+                    <input type="hidden" name="tool_id" value="{{ request('tool_id') }}">
+                </div>
+            </div>
 
-                                    <div class="col-md-2 ">
-                                        <label class="form-label mb-1 small">Tool</label>
-                                        <div class="position-relative">
-                                            <div class="input-group input-group-sm">
-                                                <input type="text" class="form-control pe-5" name="tool_search"
-                                                    placeholder="Cari Tool" autocomplete="off">
-                                                <input type="hidden" name="tool_id" value="{{ request('tool_id') }}">
-                                                <button type="button"
-                                                    class="btn btn-outline-secondary search-clear-btn position-absolute end-0 h-100"
-                                                    style="display: none; border: 1px solid #ced4da; border-left: none; z-index: 5; background: white;">
-                                                    <i class="bi bi-x"></i>
-                                                </button>
-                                            </div>
-                                            <div class="position-absolute w-100 bg-white border border-top-0 rounded-bottom shadow-sm"
-                                                style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none; margin-top: -1px;"
-                                                id="tool-results"></div>
-                                        </div>
-                                    </div>
+            <!-- Job Reference -->
+            <div class="col-md-2">
+                <label class="form-label mb-1 small">Job Ref</label>
+                <input type="text" class="form-control form-control-sm" name="job_reference"
+                       placeholder="Job reference" value="{{ request('job_reference') }}">
+            </div>
 
-                                    <div class="col-md-2 ">
-                                        <label class="form-label mb-1 small">Job Ref</label>
-                                        <input type="text" class="form-control form-control-sm" name="job_reference"
-                                            placeholder="Job reference" value="{{ request('job_reference') }}">
-                                    </div>
+            <!-- Date Range -->
+            <div class="col-md-1">
+                <label class="form-label mb-1 small">Dari</label>
+                <input type="date" class="form-control form-control-sm" name="start_date"
+                       value="{{ request('start_date') }}">
+            </div>
 
-                                    <div class="col-md-2 ">
-                                        <label class="form-label mb-1 small">Dari</label>
-                                        <input type="date" class="form-control form-control-sm" name="start_date"
-                                            value="{{ request('start_date') }}">
-                                    </div>
+            <div class="col-md-1">
+                <label class="form-label mb-1 small">Sampai</label>
+                <input type="date" class="form-control form-control-sm" name="end_date"
+                       value="{{ request('end_date') }}">
+            </div>
 
-                                    <div class="col-md-2 ">
-                                        <label class="form-label mb-1 small">Sampai</label>
-                                        <input type="date" class="form-control form-control-sm" name="end_date"
-                                            value="{{ request('end_date') }}">
-                                    </div>
+            <!-- Sort -->
+            <div class="col-md-1">
+                <label class="form-label mb-1 small">Urutkan</label>
+                <select class="form-select form-select-sm" name="sort">
+                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Terbaru</option>
+                    <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                </select>
+            </div>
 
-                                    <div class="col-md-2 ">
-                                        <label class="form-label mb-1 small">Urutkan</label>
-                                        <select class="form-select form-select-sm" name="sort">
-                                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>
-                                                Terbaru</option>
-                                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>
-                                                Terlama</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-1 d-flex gap-2">
-                                        <button type="submit" class="btn btn-sm btn-primary w-100">
-                                            <i class="bi bi-funnel"></i>
-                                        </button>
-                                        <a href="{{ route('borrow.index') }}"
-                                            class="btn btn-sm btn-outline-secondary w-100">
-                                            <i class="bi bi-x-circle"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+            <!-- Action Buttons -->
+            <div class="col-md-2">
+                <label class="form-label mb-1 small invisible">Aksi</label>
+                <div class="d-flex gap-1">
+                    <button type="submit" class="btn btn-sm btn-primary flex-grow-1">
+                        <i class="bi bi-funnel me-1"></i> Filter
+                    </button>
+                    @if(request()->any())
+                    <a href="{{ route('borrow.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
                     </div>
                 </div>
                 <div class="card shadow-sm mt-4">
                     <div class="card-body">
-                        @if ($borrows->isEmpty())
+                        @if ($returns->isEmpty())
                             <div class="d-flex align-items-center justify-content-center" style="min-height: 55vh">
                                 <div class="text-center text-muted">
-                                    <h4>Tidak Ada Data Peminjaman Berlangsung</h4>
+                                    <h4>Tidak Ada Data Pengembalian</h4>
                                 </div>
                             </div>
                         @else
@@ -132,25 +114,31 @@
                                         <thead class="table-light">
                                             <tr style="vertical-align: middle">
                                                 <th scope="col" style="min-width: 50px; width: 50px;">No</th>
-                                                <th scope="col" style="min-width: 100px;">Prove Image</th>
+                                                {{-- <th scope="col" style="min-width: 100px;">Prove Image</th> --}}
                                                 <th scope="col" style="min-width: 150px;">Tanggal</th>
                                                 <th scope="col" style="min-width: 150px;">Peminjam</th>
+                                                <th scope="col" style="min-width: 150px;">Returner</th>
                                                 <th scope="col" style="min-width: 200px;">Job Reference</th>
                                                 <th scope="col" style="min-width: 150px;">Tool List</th>
                                                 <th scope="col" style="min-width: 150px;">Note</th>
-                                                <th scope="col" style="min-width: 100px; width: 100px;"
-                                                    class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody id="toolTableBody">
-                                            @foreach ($borrows as $borrow)
+                                            @foreach ($returns as $return)
                                                 <tr>
                                                     <td style="min-width: 50px;">{{ $loop->iteration }}</td>
-                                                    <td style="min-width: 100px;">
-                                                        @if ($borrow->image)
-                                                            <img src="{{ asset('storage/' . $borrow->image) }}"
-                                                                alt="peminjaman {{ $borrow->engineer->name ?? 'No Engineer' }}"
-                                                                class="rounded"
+                                                    {{-- <td style="min-width: 100px;">
+                                                        @php
+                                                            // Cari gambar pertama dari return details
+                                                            $firstImage = $return->returnDetails->firstWhere(
+                                                                'image',
+                                                                '!=',
+                                                                null,
+                                                            );
+                                                        @endphp
+                                                        @if ($firstImage && $firstImage->image)
+                                                            <img src="{{ asset('storage/' . $firstImage->image) }}"
+                                                                alt="bukti pengembalian" class="rounded"
                                                                 style="width: 75px; height: 75px; object-fit: cover;">
                                                         @else
                                                             <div class="rounded bg-light d-flex align-items-center justify-content-center"
@@ -158,30 +146,46 @@
                                                                 <i class="bi bi-bag text-muted fs-4"></i>
                                                             </div>
                                                         @endif
-                                                    </td>
+                                                    </td> --}}
                                                     <td>
                                                         <div class="d-flex flex-column">
                                                             <span
-                                                                class=" mb-1">{{ $borrow->created_at->format('d M Y') }}</span>
+                                                                class=" mb-1">{{ $return->created_at->format('d M Y') }}</span>
                                                             <small
-                                                                class="text-muted">{{ $borrow->created_at->format('H:i') }}</small>
+                                                                class="text-muted">{{ $return->created_at->format('H:i') }}</small>
                                                         </div>
                                                     </td>
                                                     <td style="min-width: 150px;">
-                                                        <strong>{{ $borrow->engineer->name ?? '-' }}</strong>
+                                                        <strong>{{ $return->borrow->engineer->name ?? '-' }}</strong>
+                                                        @if ($return->borrow)
+                                                            <small class="d-block text-muted">Borrow
+                                                                #{{ $return->borrow_id }}</small>
+                                                        @endif
+                                                    </td>
+                                                    <td style="min-width: 150px;">
+                                                        @if ($return->returner)
+                                                            <strong>{{ $return->returner->name }}</strong>
+                                                        @else
+                                                            <span class="badge bg-info">Admin</span>
+                                                        @endif
                                                     </td>
                                                     <td style="min-width: 150px; max-width: 150px; flex-wrap: wrap"
-                                                        title="{{ $borrow->job_reference }}">
-                                                        {{ $borrow->job_reference ?? '-' }}
+                                                        title="{{ $return->job_reference }}">
+                                                        {{ $return->job_reference ?? '-' }}
                                                     </td>
                                                     <td style="min-width: 200px;">
                                                         <div class="d-flex flex-column gap-1">
-                                                            @foreach ($borrow->borrowDetails as $detail)
+                                                            @foreach ($return->returnDetails as $detail)
                                                                 <div
                                                                     class="d-flex justify-content-between align-items-center py-1 border-bottom">
                                                                     <div>
                                                                         <strong>{{ $detail->tool->name ?? 'Unknown' }}</strong>
-                                                                        @if ($detail->tool && $detail->tool->description)
+                                                                        @if ($detail->locator)
+                                                                            <small class="d-block text-muted">
+                                                                                <i
+                                                                                    class="bi bi-geo-alt me-1"></i>{{ $detail->locator }}
+                                                                            </small>
+                                                                        @elseif ($detail->tool && $detail->tool->description)
                                                                             <small class="d-block text-muted">
                                                                                 {{ Str::limit($detail->tool->description, 30) }}
                                                                             </small>
@@ -194,34 +198,8 @@
                                                         </div>
                                                     </td>
                                                     <td style="min-width: 150px; max-width: 150px; flex-wrap: wrap"
-                                                        title="{{ $borrow->note }}">
-                                                        {{ $borrow->note ?? '-' }}
-                                                    </td>
-                                                    <td style="min-width: 100px;" class="text-center">
-                                                        <!-- Complete Button -->
-                                                        @if (!$borrow->is_completed)
-                                                            <form action="{{ route('borrow.complete', $borrow->id) }}"
-                                                                method="POST"
-                                                                onsubmit="return confirm('Tandai peminjaman ini sebagai selesai?')">
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <button class="btn btn-sm btn-success w-100"
-                                                                    title="Complete">
-                                                                    <i class="bi bi-check-circle me-1"></i> Complete
-                                                                </button>
-                                                            </form>
-                                                        @else
-                                                            <!-- Delete Button -->
-                                                            {{-- <form action="{{ route('engineer.destroy', $engineer->id) }}"
-                                                                method="POST" class="d-inline"
-                                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus engineer ini?')">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button class="btn btn-sm btn-link text-danger">
-                                                                    <i class="bi bi-trash-fill"></i>
-                                                                </button>
-                                                            </form> --}}
-                                                        @endif
+                                                        title="{{ $return->notes }}">
+                                                        {{ $return->notes ?? '-' }}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -257,6 +235,13 @@
             // Cari tombol clear yang ada di dalam input-group yang sama
             const engineerContainer = engineerSearch.closest('.input-group');
             const engineerClearBtn = engineerContainer.querySelector('.search-clear-btn');
+            // Returner search elements
+            const returnerSearch = document.querySelector('input[name="returner_search"]');
+            const returnerIdInput = document.querySelector('input[name="returner_id"]');
+            const returnerResults = document.getElementById('returner-results');
+            // Cari tombol clear yang ada di dalam input-group yang sama
+            const returnerContainer = returnerSearch.closest('.input-group');
+            const returnerClearBtn = returnerContainer.querySelector('.search-clear-btn');
 
             // Tool search elements
             const toolSearch = document.querySelector('input[name="tool_search"]');
