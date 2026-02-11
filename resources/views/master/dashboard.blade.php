@@ -210,11 +210,11 @@
                                     @foreach ($recentActivities as $activity)
                                         <div class="list-group-item border-0 py-3 px-3">
                                             <div class="d-flex">
-                                                <div class="flex-shrink-0">
+                                                <div class="shrink-0">
                                                     <i
                                                         class="bi {{ $activity['icon'] }} text-{{ $activity['color'] }} fs-5"></i>
                                                 </div>
-                                                <div class="flex-grow-1 ms-3">
+                                                <div class="grow ms-3">
                                                     <h6 class="mb-1">{{ $activity['title'] }}</h6>
                                                     <p class="text-muted mb-1">
                                                         {{ $activity['name'] }}

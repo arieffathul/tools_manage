@@ -41,7 +41,7 @@ class DashboardController extends Controller
 
         $chartData = $this->getWeeklyChartData();
 
-        $recentActivities = $this->getRecentActivities(6);
+        $recentActivities = $this->getRecentActivities(4);
 
         //         $recentActivities = Activity::with('user', 'borrow')
         //     ->latest()
@@ -107,7 +107,7 @@ class DashboardController extends Controller
     }
 
     // DashboardController.php
-    private function getRecentActivities($limit = 6)
+    private function getRecentActivities($limit = 5)
     {
         // Cara 1: Simple tapi 2 query
         $activities = collect();

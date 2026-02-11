@@ -21,4 +21,19 @@ class Engineer extends Model
     {
         return $this->hasMany(Borrow::class);
     }
+
+    public function borrowReturns()
+    {
+        return $this->hasMany(BorrowReturn::class, 'returner_id');
+    }
+
+    public function brokenTools()
+    {
+        return $this->hasMany(BrokenTool::class, 'reported_by');
+    }
+
+    public function handledBrokenTools()
+    {
+        return $this->hasMany(BrokenTool::class, 'handled_by');
+    }
 }
