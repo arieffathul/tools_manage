@@ -216,7 +216,7 @@
                             </button>
                         </div>
                         <div class="col-md-6">
-                            <button type="submit" class="btn btn-success w-100" id="submitBtn" disabled>
+                            <button type="submit" class="btn btn-success w-100" id="submitBtn">
                                 <i class="bi bi-check-circle"></i> Submit
                             </button>
                         </div>
@@ -314,9 +314,9 @@
                 toast.show();
             }
 
-            function updateSubmitButton() {
-                submitBtn.disabled = !(selectedEngineer && cart.length > 0);
-            }
+            // function updateSubmitButton() {
+            //     submitBtn.disabled = !(selectedEngineer && cart.length > 0);
+            // }
 
             function updateCartCounter() {
                 const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);

@@ -19,56 +19,107 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        // $viewCompleted = request('is_completed') == 1;
+        $viewCompleted = request('is_completed', 0) == 1;
 
-        $query = Borrow::with(['engineer', 'borrowDetails' => function ($query) {
-            $query->where('is_complete', 0)->with('tool');
-        }])->where('is_completed', 0);
+        if ($viewCompleted) {
+            // QUERY UNTUK COMPLETE (RETURNS)
+            $query = BorrowReturn::with([
+                'returner',
+                'borrow.engineer',
+                'returnDetails.tool',
+            ]);
 
-        // Filter by engineer
-        if (request('engineer_id')) {
-            $query->where('engineer_id', request('engineer_id'));
+            // Filter by returner
+            if (request('returner_id')) {
+                $query->where('returner_id', request('returner_id'));
+            }
+
+            // Filter by original borrower
+            if (request('engineer_id')) {
+                $query->whereHas('borrow', function ($q) {
+                    $q->where('engineer_id', request('engineer_id'));
+                });
+            }
+
+            // Filter by tool
+            if (request('tool_id')) {
+                $query->whereHas('returnDetails', function ($q) {
+                    $q->where('tool_id', request('tool_id'));
+                });
+            }
+
+            // Filter by job reference
+            if (request('job_reference')) {
+                $query->where('job_reference', 'like', '%'.request('job_reference').'%');
+            }
+
+            // Filter by date range
+            if (request('start_date')) {
+                $query->whereDate('created_at', '>=', request('start_date'));
+            }
+            if (request('end_date')) {
+                $query->whereDate('created_at', '<=', request('end_date'));
+            }
+
+            $borrows = $query->latest()->paginate(20);
+
+        } else {
+            // QUERY UNTUK ON GOING (BORROWS)
+            $query = Borrow::with([
+                'engineer',
+                'borrowDetails' => function ($query) {
+                    $query->where('is_complete', 0)->with('tool');
+                },
+            ])->where('is_completed', 0);
+
+            // Filter by engineer
+            if (request('engineer_id')) {
+                $query->where('engineer_id', request('engineer_id'));
+            }
+
+            // Filter by tool
+            if (request('tool_id')) {
+                $query->whereHas('borrowDetails', function ($q) {
+                    $q->where('tool_id', request('tool_id'));
+                });
+            }
+
+            // Filter by job reference
+            if (request('job_reference')) {
+                $query->where('job_reference', 'like', '%'.request('job_reference').'%');
+            }
+
+            // Filter by date range
+            if (request('start_date')) {
+                $query->whereDate('created_at', '>=', request('start_date'));
+            }
+            if (request('end_date')) {
+                $query->whereDate('created_at', '<=', request('end_date'));
+            }
+
+            // Sorting
+            switch (request('sort')) {
+                case 'oldest':
+                    $query->orderBy('created_at', 'asc');
+                    break;
+                default:
+                    $query->latest();
+            }
+
+            $borrows = $query->paginate(20);
         }
 
-        // Filter by tool (via borrow details)
-        if (request('tool_id')) {
-            $query->whereHas('borrowDetails', function ($q) {
-                $q->where('tool_id', request('tool_id'));
-            });
-        }
-
-        // Filter by job reference
-        if (request('job_reference')) {
-            $query->where('job_reference', 'like', '%'.request('job_reference').'%');
-        }
-
-        // Filter by date range
-        if (request('start_date')) {
-            $query->whereDate('created_at', '>=', request('start_date'));
-        }
-        if (request('end_date')) {
-            $query->whereDate('created_at', '<=', request('end_date'));
-        }
-
-        // Sorting
-        switch (request('sort')) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            default: // newest
-                $query->latest();
-        }
-
-        $borrows = $query->paginate(20);
-
-        // Get data for filter dropdowns
+        // Data untuk filter dropdown
         $engineers = Engineer::where('status', 'active')->get();
         $tools = Tool::all();
+        $returners = Engineer::where('status', 'active')->get();
 
         return view('master.borrowList', compact(
             'borrows',
             'engineers',
-            'tools'
+            'tools',
+            'returners',
+            'viewCompleted'
         ));
     }
 

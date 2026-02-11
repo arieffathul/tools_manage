@@ -109,14 +109,14 @@
 
                     <!-- Telat Kembali -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-start border-danger border-4 shadow-sm h-100">
+                        <div class="card border-start border-danger border-4 shadow-sm h-100 hover-shadow">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <p class="text-muted mb-2">Telat Kembali</p>
-                                        <h3 class="fw-bold mb-0 text-danger">7</h3>
+                                        <p class="text-muted mb-2">Tools Rusak</p>
+                                        <h3 class="fw-bold mb-0 text-danger">{{ $stats['broken_tools_count'] }}</h3>
                                         <small class="text-danger">
-                                            <i class="bi bi-exclamation-triangle"></i> +2 dari kemarin
+                                            <i class="bi bi-exclamation-triangle"></i> {{ $stats['broken_tools_todeay_count'] }} dilaporkan hari ini
                                         </small>
                                     </div>
                                     <div class="bg-danger bg-opacity-10 p-2 rounded">

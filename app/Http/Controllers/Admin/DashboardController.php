@@ -37,6 +37,14 @@ class DashboardController extends Controller
                 ->join('borrow_returns', 'return_details.borrow_return_id', '=', 'borrow_returns.id')
                 ->whereDate('borrow_returns.created_at', today())
                 ->sum('return_details.quantity'),
+
+            'broken_tools_count' => DB::table('broken_tools')
+                ->whereNot('status', 'resolved')
+                ->count(),
+            'broken_tools_todeay_count' => DB::table('broken_tools')
+                ->whereNot('status', 'resolved')
+                ->whereDate('created_at', today())
+                ->count(),
         ];
 
         $chartData = $this->getWeeklyChartData();
