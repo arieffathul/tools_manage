@@ -38,6 +38,29 @@ class Tool extends Model
         return $this->hasMany(BrokenTool::class);
     }
 
+    public function incrementAllQuantity($amount)
+    {
+        // tambah quantity
+        $this->quantity += $amount;
+        $this->save();
+
+        return $this->quantity;
+    }
+
+    public function decrementAllQuantity($amount)
+    {
+        // kurangi quantity
+        $this->quantity -= $amount;
+
+        // jika current melebihi quantity, samakan
+        if ($this->current_quantity > $this->quantity) {
+            $this->current_quantity = $this->quantity;
+        }
+        $this->save();
+
+        return $this->quantity;
+    }
+
     public function decrementQuantity($amount)
     {
         // Kurangi current_quantity
@@ -48,7 +71,6 @@ class Tool extends Model
             $this->current_quantity = 0;
 
             // Optional: Log warning
-            // \Log::warning("Tool {$this->name} (ID: {$this->id}) current_quantity set to 0 after decrement. Was negative.");
         }
 
         $this->save();

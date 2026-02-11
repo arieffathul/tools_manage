@@ -21,8 +21,10 @@ return new class extends Migration
             $table->string('status')->default('unidentified');
             $table->string('image')->nullable();
             $table->string('issue')->nullable();
+            $table->string('last_used')->nullable();
             $table->string('action')->nullable();
             $table->text('notes')->nullable();
+            $table->timestamp('resolved_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

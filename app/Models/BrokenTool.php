@@ -18,9 +18,11 @@ class BrokenTool extends Model
         'locator',
         'status',
         'image',
+        'last_used',
         'issue',
         'action',
         'notes',
+        'resolved_at',
     ];
 
     public function tool()
