@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Borrow;
 use App\Models\BorrowReturn;
+use App\Models\BrokenTool;
 use App\Models\Tool;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +25,7 @@ class DashboardController extends Controller
 
         $stats = [
             'total_tools' => Tool::count(),
+            'new_tools_today' => Tool::whereDate('created_at', today())->count(),
             'active_borrows_count' => Borrow::where('is_completed', 0)->count(),
 
             'unreturned_items_count' => DB::table('borrow_details')
@@ -41,8 +43,7 @@ class DashboardController extends Controller
             'broken_tools_count' => DB::table('broken_tools')
                 ->whereNot('status', 'resolved')
                 ->count(),
-            'broken_tools_todeay_count' => DB::table('broken_tools')
-                ->whereNot('status', 'resolved')
+            'broken_tools_today_count' => DB::table('broken_tools')
                 ->whereDate('created_at', today())
                 ->count(),
         ];
@@ -95,23 +96,25 @@ class DashboardController extends Controller
             ->pluck('count', 'date')
             ->toArray();
 
-        // dd([
-        //     'dateRange' => $dateRange,
-        //     'labels' => $labels,
-        //     'borrowData' => $borrowData,
-        //     'returnData' => $returnData,
-        //     'dateRange_type' => gettype($dateRange),
-        //     'borrowData_type' => gettype($borrowData),
-        // ]);
+        $brokenData = BrokenTool::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->pluck('count', 'date')
+            ->toArray();
 
         $borrowCounts = [];
         $returnCounts = [];
+        $brokenCounts = [];
+
         foreach ($dateRange as $date => $defaultValue) {
             $borrowCounts[] = $borrowData[$date] ?? $defaultValue;
             $returnCounts[] = $returnData[$date] ?? $defaultValue;
+            $brokenCounts[] = $brokenData[$date] ?? $defaultValue;
         }
 
-        return compact('labels', 'borrowCounts', 'returnCounts');
+        return compact('labels', 'borrowCounts', 'returnCounts', 'brokenCounts');
     }
 
     // DashboardController.php
@@ -136,7 +139,7 @@ class DashboardController extends Controller
                 'icon' => 'bi-box-arrow-in-right',
                 'color' => 'primary',
                 'title' => 'Peminjaman Baru',
-                'description' => 'meminjam tools',
+                'description' => 'meminjam tools untuk pekerjaan',
             ]);
         }
 
@@ -156,7 +159,47 @@ class DashboardController extends Controller
                 'icon' => 'bi-box-arrow-left',
                 'color' => 'success',
                 'title' => 'Pengembalian Tool',
-                'description' => 'mengembalikan tools',
+                'description' => 'mengembalikan tools dari pekerjaan',
+            ]);
+        }
+
+        $broken = BrokenTool::with(['reporter:id,name'])
+            ->latest()
+            ->limit($limit)
+            ->get(['id', 'reported_by', 'tool_id', 'created_at']);
+
+        foreach ($broken as $item) {
+            $activities->push([
+                'type' => 'broken',
+                'id' => $item->id,
+                // 'name' => $item->reporter?->name ?? 'Admin',
+                'name' => $item->tool?->name,
+                'job_reference' => ($item->reporter?->name ?? 'Admin'),
+                'time' => $item->created_at,
+                'icon' => 'bi-exclamation-triangle',
+                'color' => 'danger',
+                'title' => 'Laporan Tools Rusak',
+                'description' => 'dilaporkan rusak oleh ',
+            ]);
+        }
+
+        $repaired = BrokenTool::with(['handler:id,name'])
+            ->where('status', 'resolved')
+            ->latest()
+            ->limit($limit)
+            ->get(['id', 'handled_by', 'tool_id', 'resolved_at']);
+
+        foreach ($repaired as $item) {
+            $activities->push([
+                'type' => 'repaired',
+                'id' => $item->id,
+                'name' => $item->tool?->name,
+                'job_reference' => $item->handler?->name ?? 'Admin',
+                'time' => $item->resolved_at,
+                'icon' => 'bi-wrench',
+                'color' => 'secondary',
+                'title' => 'Tools Diperbaiki',
+                'description' => 'telah diperbaiki oleh ',
             ]);
         }
 

@@ -37,12 +37,11 @@
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
                                             <p class="text-muted mb-2">Total Jenis Tools</p>
-                                            <h3 class="fw-bold mb-0 text-dark">{{ $stats['total_tools'] }}</h3>
-                                            @if (isset($stats['total_tools_available']))
-                                                <small class="text-muted">
-                                                    {{ $stats['total_tools_available'] }} tersedia
-                                                </small>
-                                            @endif
+                                            <h3 class="fw-bold mb-0 text-primary">{{ $stats['total_tools'] }}</h3>
+                                            <small class="text-primary">
+                                                <i class="bi bi-bag me-1"></i>
+                                                {{ $stats['new_tools_today'] }} tools baru hari ini
+                                            </small>
                                         </div>
                                         <div class="bg-primary bg-opacity-10 p-2 rounded">
                                             <i class="bi bi-tools text-primary fs-4"></i>
@@ -116,7 +115,8 @@
                                         <p class="text-muted mb-2">Tools Rusak</p>
                                         <h3 class="fw-bold mb-0 text-danger">{{ $stats['broken_tools_count'] }}</h3>
                                         <small class="text-danger">
-                                            <i class="bi bi-exclamation-triangle"></i> {{ $stats['broken_tools_todeay_count'] }} dilaporkan hari ini
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                            {{ $stats['broken_tools_today_count'] }} dilaporkan hari ini
                                         </small>
                                     </div>
                                     <div class="bg-danger bg-opacity-10 p-2 rounded">
@@ -217,10 +217,9 @@
                                                 <div class="grow ms-3">
                                                     <h6 class="mb-1">{{ $activity['title'] }}</h6>
                                                     <p class="text-muted mb-1">
-                                                        {{ $activity['name'] }}
+                                                        <strong>{{ $activity['name'] }}</strong>
                                                         {{ $activity['description'] }}
                                                         @if ($activity['job_reference'])
-                                                            untuk pekerjaan
                                                             <strong>{{ $activity['job_reference'] }}</strong>
                                                         @endif
                                                     </p>
@@ -288,6 +287,14 @@
                         data: chartData.returnCounts,
                         backgroundColor: '#198754',
                         borderColor: '#157347',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderSkipped: false,
+                    }, {
+                        label: 'Tools Rusak',
+                        data: chartData.brokenCounts,
+                        backgroundColor: '#dc3545',
+                        borderColor: '#bb2d3b',
                         borderWidth: 1,
                         borderRadius: 4,
                         borderSkipped: false,
