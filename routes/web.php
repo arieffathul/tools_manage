@@ -38,6 +38,9 @@ Route::middleware('admin')->group(function () {
 
     // return management
     Route::get('return', [BorrowReturnController::class, 'index'])->name('return.index');
+
+    // broken tools management
+    Route::get('broken', [BrokenToolsController::class, 'index'])->name('broken.index');
 });
 
 // form borrow

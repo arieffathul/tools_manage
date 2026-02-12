@@ -8,16 +8,76 @@ use App\Http\Requests\Broken\UpdateBrokenToolsRequest;
 use App\Models\BrokenTool;
 use App\Models\Engineer;
 use App\Models\Tool;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+// use Symfony\Component\HttpFoundation\Request;
 
 class BrokenToolsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $viewResolved = $request->get('status') == 'resolved';
+        $query = BrokenTool::with(['tool', 'reporter', 'handler']);
+
+        // ========== FILTER TAB ==========
+        if ($viewResolved) {
+            $query->where('status', 'resolved');
+        } else {
+            $query->whereIn('status', ['poor', 'broken', 'scrap']);
+        }
+
+        // ========== FILTER STATUS (HANYA UNTUK ONGOING) ==========
+        if (! $viewResolved && $request->filled('status_filter')) {
+            $query->where('status', $request->status_filter);
+        }
+
+        // ========== FILTER ENGINEER ==========
+        if ($viewResolved && $request->filled('handler_id')) {
+            $query->where('handled_by', $request->handler_id);
+        }
+
+        if (! $viewResolved && $request->filled('reporter_id')) {
+            $query->where('reported_by', $request->reporter_id);
+        }
+
+        // ========== FILTER TOOL ==========
+        if ($request->filled('tool_id')) {
+            $query->where('tool_id', $request->tool_id);
+        }
+
+        // ========== FILTER DATE RANGE ==========
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        // ========== SORTING ==========
+        switch ($request->get('sort')) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            default: // newest
+                $query->latest();
+        }
+
+        $brokenTools = $query->paginate(20);
+
+        // Data untuk filter dropdown
+        $engineers = Engineer::where('status', 'active')->get();
+        $tools = Tool::all();
+
+        return view('master.broken.brokenList', compact(
+            'brokenTools',
+            'viewResolved',
+            'engineers',
+            'tools'
+        ));
     }
 
     public function select()

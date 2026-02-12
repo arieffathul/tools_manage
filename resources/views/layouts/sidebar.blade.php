@@ -36,6 +36,14 @@
                         <p>Tools</p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    {{-- <a href="{{ route('admin.request.index') }}" --}}
+                    <a href="{{ route('broken.index') }}" class="nav-link {{ $currentPage === 'brokenTools' ? 'active' : '' }}">
+                        <i class="nav-icon bi bi-exclamation-triangle-fill"></i>
+                        <p>Broken Tools</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     {{-- <a href="{{ route('admin.request.index') }}" --}}
                     <a href="{{ route('borrow.index') }}"

@@ -172,7 +172,7 @@
                                                             @else
                                                                 <div class="rounded bg-light d-flex align-items-center justify-content-center"
                                                                     style="width: 75px; height: 75px;">
-                                                                    <i class="bi bi-arrow-return-left text-muted fs-4"></i>
+                                                                    <i class="bi bi-tools text-muted fs-4"></i>
                                                                 </div>
                                                             @endif
                                                         @else

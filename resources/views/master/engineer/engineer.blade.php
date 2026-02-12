@@ -31,8 +31,10 @@
                             <label class="form-label mb-1 small">Shift</label>
                             <select class="form-select form-select-sm" id="shiftFilter">
                                 <option selected value="">Semua Shift</option>
-                                <option value="morning">Morning</option>
+                                <option value="day">Day</option>
                                 <option value="night">Night</option>
+                                <option value="flexible">Flexible</option>
+                                <option value="weekend">Weekend</option>
                             </select>
                         </div>
 
@@ -174,13 +176,21 @@
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Shift</label>
                                                                     <select class="form-select" name="shift" required>
-                                                                        <option value="morning"
-                                                                            {{ $engineer->shift === 'morning' ? 'selected' : '' }}>
-                                                                            Morning
+                                                                        <option value="day"
+                                                                            {{ $engineer->shift === 'day' ? 'selected' : '' }}>
+                                                                            Day
                                                                         </option>
                                                                         <option value="night"
                                                                             {{ $engineer->shift === 'night' ? 'selected' : '' }}>
                                                                             Night
+                                                                        </option>
+                                                                        <option value="flexible"
+                                                                            {{ $engineer->shift === 'flexible' ? 'selected' : '' }}>
+                                                                            Flexible
+                                                                        </option>
+                                                                        <option value="weekend"
+                                                                            {{ $engineer->shift === 'weekend' ? 'selected' : '' }}>
+                                                                            Weekend
                                                                         </option>
                                                                     </select>
                                                                 </div>
@@ -249,8 +259,10 @@
                             <div class="mb-3">
                                 <label class="form-label">Shift</label>
                                 <select class="form-select" name="shift" required>
-                                    <option value="morning">Morning</option>
+                                    <option value="day">Day</option>
                                     <option value="night">Night</option>
+                                    <option value="flexible">Flexible</option>
+                                    <option value="weekend">Weekend</option>
                                 </select>
                             </div>
 
