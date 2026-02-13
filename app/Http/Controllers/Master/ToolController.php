@@ -7,6 +7,7 @@ use App\Http\Requests\Tool\StoreToolRequest;
 use App\Http\Requests\Tool\UpdateToolRequest;
 use App\Models\Tool;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ToolController extends Controller
@@ -14,12 +15,24 @@ class ToolController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tools = Tool::all();
+        $query = Tool::query();
+
+        // ========== SEARCH ==========
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // ========== PAGINATION ==========
+        $tools = $query->paginate(10)->withQueryString();
 
         return view('master.tool.tools', compact('tools'));
-
     }
 
     /**

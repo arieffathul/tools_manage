@@ -5,10 +5,43 @@
     <main class="app-main">
         <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
-                <div class="row align-items-center justify-content-between mb-3 g-2">
+                <div class="row justify-content-between align-items-center mb-3">
+                    <div class="col-auto">
+                        <h1 class="mb-0">Kelola Tools</h1>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-success d-flex align-items-center gap-2" data-bs-toggle="modal"
+                            data-bs-target="#addToolModal">
+                            <i class="bi bi-plus-lg"></i> Tambah Tool
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row justify-content-between align-items-end">
+                    <div class="col-auto d-flex flex-wrap align-items-end gap-3 mb-3">
+                        <form action="{{ route('tool.index') }}" method="GET" id="searchForm">
+                            <label class="form-label mb-1 small fw-medium">Cari Tool</label>
+                            <div class="input-group input-group-sm" style="min-width: 320px;">
+                                <input type="text" class="form-control" name="search"
+                                    placeholder="Nama, kode, atau deskripsi tool" value="{{ request('search') }}">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-auto mb-3">
+                        <div class="d-flex gap-2">
+                            <button type="submit" form="searchForm" class="btn btn-sm btn-primary">
+                                <i class="bi bi-funnel"></i> Cari
+                            </button>
+                            <a href="{{ route('tool.index') }}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-x-circle"></i> Reset
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {{-- <div class="row align-items-center justify-content-between mb-3 g-2">
                     <h1>Kelola Tools</h1>
                     <div class="col-auto d-flex flex-wrap align-items-end gap-3">
-                        {{-- Search --}}
                         <div>
                             <label class="form-label mb-1 small">Cari Tool</label>
                             <form action="{{ route('tool.index') }}" method="GET" id="searchForm">
@@ -23,14 +56,13 @@
                             </form>
                         </div>
                     </div>
-                    {{-- Tombol Tambah --}}
                     <div class="col-auto">
                         <button type="button" class="btn btn-success d-flex align-items-center gap-2"
                             data-bs-toggle="modal" data-bs-target="#addToolModal">
                             <i class="bi bi-plus-lg"></i> Tambah Tool
                         </button>
                     </div>
-                </div>
+                </div> --}}
                 <div class="card shadow-sm mt-4">
                     <div class="card-body">
                         @if ($tools->isEmpty())
@@ -210,7 +242,8 @@
                                                                             accept="image/*">
                                                                         @if ($tool->image)
                                                                             <div class="mt-2">
-                                                                                <p class="small text-muted">Current Image:
+                                                                                <p class="small text-muted">Current
+                                                                                    Image:
                                                                                 </p>
                                                                                 <img src="{{ asset('storage/' . $tool->image) }}"
                                                                                     alt="Current Image"
@@ -269,13 +302,11 @@
                                                     </div>
                                                 </div>
                                             @endforeach
-                                            <tr id="noResultRow" style="display: none;">
-                                                <td colspan="12" class="text-center text-muted py-4">
-                                                    <em>Tidak ada tool yang cocok dengan pencarian.</em>
-                                                </td>
-                                            </tr>
                                         </tbody>
                                     </table>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        {{ $tools->links() }}
+                                    </div>
                                 </div>
                             </div>
                         @endif
@@ -397,35 +428,35 @@
             @endforeach
         });
 
-        const searchInput = document.getElementById('searchTool');
-        const tableRows = document.querySelectorAll('#toolTableBody tr');
-        const noResultRow = document.getElementById('noResultRow');
+        // const searchInput = document.getElementById('searchTool');
+        // const tableRows = document.querySelectorAll('#toolTableBody tr');
+        // const noResultRow = document.getElementById('noResultRow');
 
-        function filterTools() {
-            const searchValue = searchInput.value.toLowerCase();
-            let visibleCount = 0;
+        // function filterTools() {
+        //     const searchValue = searchInput.value.toLowerCase();
+        //     let visibleCount = 0;
 
-            tableRows.forEach(row => {
-                if (row.id === 'noResultRow') return;
+        //     tableRows.forEach(row => {
+        //         if (row.id === 'noResultRow') return;
 
-                const nama = row.cells[3].textContent.toLowerCase();
-                const kode = row.cells[2].textContent.toLowerCase();
-                const desc = row.cells[4].textContent.toLowerCase();
+        //         const nama = row.cells[3].textContent.toLowerCase();
+        //         const kode = row.cells[2].textContent.toLowerCase();
+        //         const desc = row.cells[4].textContent.toLowerCase();
 
-                const matchSearch = nama.includes(searchValue) || kode.includes(searchValue) || desc.includes(
-                    searchValue);
+        //         const matchSearch = nama.includes(searchValue) || kode.includes(searchValue) || desc.includes(
+        //             searchValue);
 
-                row.style.display = matchSearch ? '' : 'none';
-                if (matchSearch) visibleCount++;
-            });
+        //         row.style.display = matchSearch ? '' : 'none';
+        //         if (matchSearch) visibleCount++;
+        //     });
 
-            noResultRow.style.display = visibleCount === 0 ? '' : 'none';
-        }
+        //     noResultRow.style.display = visibleCount === 0 ? '' : 'none';
+        // }
 
-        searchInput.addEventListener('input', filterTools);
-        document.getElementById('searchForm').addEventListener('submit', e => {
-            e.preventDefault();
-            filterTools();
-        });
+        // searchInput.addEventListener('input', filterTools);
+        // document.getElementById('searchForm').addEventListener('submit', e => {
+        //     e.preventDefault();
+        //     filterTools();
+        // });
     </script>
 @endsection

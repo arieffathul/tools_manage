@@ -10,7 +10,7 @@
         <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div class="col-12">
+                    <div class="col mb-2">
                         <h1 class="mb-0">Kelola Engineer</h1>
                     </div>
                 </div>
