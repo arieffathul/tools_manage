@@ -39,30 +39,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="row align-items-center justify-content-between mb-3 g-2">
-                    <h1>Kelola Tools</h1>
-                    <div class="col-auto d-flex flex-wrap align-items-end gap-3">
-                        <div>
-                            <label class="form-label mb-1 small">Cari Tool</label>
-                            <form action="{{ route('tool.index') }}" method="GET" id="searchForm">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" name="search"
-                                        placeholder="Masukkan nama, kode, atau desc tool" id="searchTool"
-                                        value="{{ request('search') }}">
-                                    <button class="btn btn-success" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-success d-flex align-items-center gap-2"
-                            data-bs-toggle="modal" data-bs-target="#addToolModal">
-                            <i class="bi bi-plus-lg"></i> Tambah Tool
-                        </button>
-                    </div>
-                </div> --}}
                 <div class="card shadow-sm mt-4">
                     <div class="card-body">
                         @if ($tools->isEmpty())
@@ -267,9 +243,30 @@
                                                                                 id="quantity{{ $tool->id }}"
                                                                                 name="quantity"
                                                                                 value="{{ $tool->quantity }}"
-                                                                                min="0" required>
+                                                                                min="0" required
+                                                                                oninput="document.getElementById('current_quantity{{ $tool->id }}').max = this.value">
                                                                         </div>
+                                                                    </div>
 
+                                                                    {{-- Current Quantity --}}
+                                                                    <div class="row">
+                                                                        <div class="col-md-6 mb-3">
+                                                                            <label
+                                                                                for="current_quantity{{ $tool->id }}"
+                                                                                class="form-label">
+                                                                                Current Quantity*
+                                                                            </label>
+                                                                            <input type="number" class="form-control"
+                                                                                id="current_quantity{{ $tool->id }}"
+                                                                                name="current_quantity"
+                                                                                value="{{ $tool->current_quantity }}"
+                                                                                min="0"
+                                                                                max="{{ $tool->quantity }}" required>
+                                                                            <small class="text-muted"
+                                                                                id="max-hint-{{ $tool->id }}">
+                                                                                Maksimal {{ $tool->quantity }}
+                                                                            </small>
+                                                                        </div>
                                                                     </div>
                                                                     {{-- Locator --}}
                                                                     <div class="row">
@@ -428,35 +425,10 @@
             @endforeach
         });
 
-        // const searchInput = document.getElementById('searchTool');
-        // const tableRows = document.querySelectorAll('#toolTableBody tr');
-        // const noResultRow = document.getElementById('noResultRow');
-
-        // function filterTools() {
-        //     const searchValue = searchInput.value.toLowerCase();
-        //     let visibleCount = 0;
-
-        //     tableRows.forEach(row => {
-        //         if (row.id === 'noResultRow') return;
-
-        //         const nama = row.cells[3].textContent.toLowerCase();
-        //         const kode = row.cells[2].textContent.toLowerCase();
-        //         const desc = row.cells[4].textContent.toLowerCase();
-
-        //         const matchSearch = nama.includes(searchValue) || kode.includes(searchValue) || desc.includes(
-        //             searchValue);
-
-        //         row.style.display = matchSearch ? '' : 'none';
-        //         if (matchSearch) visibleCount++;
-        //     });
-
-        //     noResultRow.style.display = visibleCount === 0 ? '' : 'none';
-        // }
-
-        // searchInput.addEventListener('input', filterTools);
-        // document.getElementById('searchForm').addEventListener('submit', e => {
-        //     e.preventDefault();
-        //     filterTools();
-        // });
+        document.getElementById('quantity{{ $tool->id }}').addEventListener('input', function() {
+            let maxQty = this.value;
+            let hintEl = document.getElementById('max-hint-{{ $tool->id }}');
+            hintEl.innerText = 'Maksimal ' + maxQty;
+        });
     </script>
 @endsection

@@ -19,7 +19,6 @@ class ToolController extends Controller
     {
         $query = Tool::query();
 
-        // ========== SEARCH ==========
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -29,7 +28,6 @@ class ToolController extends Controller
             });
         }
 
-        // ========== PAGINATION ==========
         $tools = $query->paginate(10)->withQueryString();
 
         return view('master.tool.tools', compact('tools'));
@@ -113,7 +111,7 @@ class ToolController extends Controller
             if ($tool) {
                 $data = $request->validated();
 
-                $data['current_quantity'] = $data['quantity'];
+                // $data['current_quantity'] = $data['quantity'];
                 $data['current_locator'] = $data['locator'];
 
                 if ($request->hasFile('image')) {
