@@ -52,17 +52,6 @@ class DashboardController extends Controller
 
         $recentActivities = $this->getRecentActivities(4);
 
-        //         $recentActivities = Activity::with('user', 'borrow')
-        //     ->latest()
-        //     ->limit(6)
-        //     ->get();
-
-        // // Popular tools - ambil hanya top 5
-        // $popularTools = Tool::withCount('borrows')
-        //     ->orderByDesc('borrows_count')
-        //     ->limit(5)
-        //     ->get(['id', 'name', 'code', 'current_quantity']);
-
         return view('master.dashboard', compact('role', 'name', 'stats', 'chartData', 'recentActivities'));
     }
 

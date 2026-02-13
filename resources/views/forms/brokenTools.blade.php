@@ -407,6 +407,9 @@
             const decreaseQtyBtn = document.getElementById('decreaseQty');
             const increaseQtyBtn = document.getElementById('increaseQty');
 
+            const submitBtn = document.getElementById('submitBtn');
+
+
             // ==================== INITIALIZE FORM ====================
             // Initialize status fields
             toggleResolvedFields();
@@ -629,8 +632,8 @@
                                 ${tool.image ?
                                     `<img src="/storage/${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                        <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                    </div>`
+                                                                                                                                                                <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                            </div>`
                                 }
                             </div>
                             <div class="flex-grow-1">
@@ -785,6 +788,122 @@
                     selectedToolSection.style.display = 'none';
                 }
             });
+
+            // ==================== FORM VALIDATION ====================
+
+            document.getElementById('brokenForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // ========== VALIDASI ==========
+                const toolId = document.getElementById('selectedToolId').value;
+                const reportedBy = document.getElementById('selectedEngineerId').value;
+                const quantity = document.getElementById('quantity').value;
+                const status = document.getElementById('status').value;
+
+                // Get available quantity from selected tool
+                let availableQty = 0;
+                if (selectedTool) {
+                    availableQty = selectedTool.quantity;
+                }
+
+                // Basic validation
+                if (!toolId || !reportedBy || !quantity || !status) {
+                    alert('Harap isi semua field yang wajib diisi (*)');
+                    return;
+                }
+
+                // Quantity validation
+                if (parseInt(quantity) > parseInt(availableQty)) {
+                    alert(
+                        `Jumlah rusak (${quantity}) tidak boleh melebihi jumlah tersedia (${availableQty})`
+                    );
+                    return;
+                }
+
+                // If status is resolved, handled_by is required
+                if (status === 'resolved' && !document.getElementById('selectedHandledById').value) {
+                    alert('Harap pilih engineer yang menangani untuk status "Resolved"');
+                    return;
+                }
+
+                // ========== LOADING STATE ==========
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+
+                // ========== FORM DATA ==========
+                const formData = new FormData();
+
+                // Hidden method untuk update
+                @if (isset($brokenTool))
+                    formData.append('_method', 'PUT');
+                @endif
+
+                // Basic fields
+                formData.append('tool_id', toolId);
+                formData.append('reported_by', reportedBy);
+                formData.append('quantity', quantity);
+                formData.append('status', status);
+                formData.append('locator', document.getElementById('locator').value);
+                formData.append('last_used', document.getElementById('last_used').value);
+                formData.append('issue', document.getElementById('issue').value);
+                formData.append('action', document.getElementById('action').value);
+                formData.append('notes', document.getElementById('notes').value);
+
+                // Handled by (if resolved)
+                if (document.getElementById('selectedHandledById').value) {
+                    formData.append('handled_by', document.getElementById('selectedHandledById').value);
+                }
+
+                // Resolved at (if auto-filled)
+                if (document.getElementById('resolved_at').value) {
+                    formData.append('resolved_at', document.getElementById('resolved_at').value);
+                }
+
+                // Image upload
+                const imageInput = document.getElementById('image');
+                if (imageInput.files[0]) {
+                    formData.append('image', imageInput.files[0]);
+                }
+
+                // ========== CSRF TOKEN ==========
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                // Ganti this.action dengan:
+                const formAction =
+                    "{{ isset($brokenTool) ? route('broken.update', $brokenTool->id) : route('broken.store') }}";
+
+                fetch(formAction, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            setTimeout(() => {
+                                window.location.href = data.redirect ||
+                                    '{{ route('forms.complete') }}';
+                            }, 1500);
+                        } else {
+                            alert(data.message || 'Terjadi kesalahan');
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat menyimpan data');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    });
+
+            });
         });
 
         // Make selectedTool global for validation
@@ -901,41 +1020,6 @@
 
         // Make resetForm globally accessible
         window.resetForm = resetForm;
-
-        // ==================== FORM VALIDATION ====================
-        document.getElementById('brokenForm').addEventListener('submit', function(event) {
-            const toolId = document.getElementById('selectedToolId').value;
-            const reportedBy = document.getElementById('selectedEngineerId').value;
-            const quantity = document.getElementById('quantity').value;
-            const status = document.getElementById('status').value;
-
-            // Get available quantity from selected tool
-            let availableQty = 0;
-            if (selectedTool) {
-                availableQty = selectedTool.quantity;
-            }
-
-            // Basic validation
-            if (!toolId || !reportedBy || !quantity || !status) {
-                event.preventDefault();
-                alert('Harap isi semua field yang wajib diisi (*)');
-                return;
-            }
-
-            // Quantity validation
-            if (parseInt(quantity) > parseInt(availableQty)) {
-                event.preventDefault();
-                alert(`Jumlah rusak (${quantity}) tidak boleh melebihi jumlah tersedia (${availableQty})`);
-                return;
-            }
-
-            // If status is resolved, handled_by is required
-            if (status === 'resolved' && !document.getElementById('selectedHandledById').value) {
-                event.preventDefault();
-                alert('Harap pilih engineer yang menangani untuk status "Resolved"');
-                return;
-            }
-        });
     </script>
 </body>
 

@@ -851,8 +851,8 @@
                 // Show loading
                 const submitBtn = document.getElementById('submitBtn');
                 const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
                 submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
 
                 // Ambil CSRF token dari meta tag
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

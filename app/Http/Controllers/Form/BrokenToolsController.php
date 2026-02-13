@@ -10,6 +10,7 @@ use App\Models\Engineer;
 use App\Models\Tool;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 // use Symfony\Component\HttpFoundation\Request;
 
 class BrokenToolsController extends Controller
@@ -121,10 +122,18 @@ class BrokenToolsController extends Controller
             $tool = Tool::find($data['tool_id']);
             if ($tool) {
                 // Kurangi quantity tool sesuai jumlah yang dilaporkan rusak
-                $tool->decrementAllQuantity($data['quantity']);
+                $tool->decrementQuantity($data['quantity']);
             }
 
             DB::commit();
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Laporan berhasil disimpan',
+                    'redirect' => route('forms.complete'),
+                ]);
+            }
 
             return redirect()
                 ->route('forms.complete')
@@ -132,6 +141,13 @@ class BrokenToolsController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
 
             return back()->with('error', $e->getMessage());
         }
@@ -186,7 +202,7 @@ class BrokenToolsController extends Controller
                 $tool = Tool::find($data['tool_id']);
                 if ($tool) {
                     // Tambah quantity tool sesuai jumlah yang dilaporkan diperbaiki
-                    $tool->incrementAllQuantity($data['quantity']);
+                    $tool->incrementQuantity($data['quantity']);
                 }
             }
 
