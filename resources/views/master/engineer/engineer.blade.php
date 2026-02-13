@@ -36,41 +36,54 @@
                 </div>
 
                 <div class="row justify-content-between align-items-end">
-                    <div class="col-auto d-flex flex-wrap align-items-end gap-3 mb-3 ">
-                        {{-- FILTER SHIFT + SEARCH ENGINEER --}}
-                        <div>
-                            <label class="form-label mb-1 small">Shift</label>
-                            <select class="form-select form-select-sm" style="min-width: 130px;">
-                                <option value="">Semua Shift</option>
-                                <option value="day">Day</option>
-                                <option value="night">Night</option>
-                                <option value="flexible">Flexible</option>
-                                <option value="weekend">Weekend</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label mb-1 small">Cari Engineer</label>
-                            <form action="{{ route('engineer.index') }}" method="GET">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" name="search" placeholder="Nama Engineer"
-                                        value="{{ request('search') }}">
-                                    @if ($viewInactive)
-                                        <input type="hidden" name="status" value="inactive">
-                                    @endif
-                                    <button class="btn btn-success" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
+                    <div class="col-auto d-flex flex-wrap align-items-end gap-3 mb-3">
+                        <form action="{{ route('engineer.index') }}" method="GET" id="filterForm">
+                            @if ($viewInactive)
+                                <input type="hidden" name="status" value="inactive">
+                            @endif
+
+                            <div class="d-flex flex-wrap gap-3 align-items-end">
+                                <div>
+                                    <label class="form-label mb-1 small">Shift</label>
+                                    <select class="form-select form-select-sm" name="shift" style="min-width: 130px;">
+                                        <option value="">Semua Shift</option>
+                                        <option value="day" {{ request('shift') == 'day' ? 'selected' : '' }}>Day
+                                        </option>
+                                        <option value="night" {{ request('shift') == 'night' ? 'selected' : '' }}>Night
+                                        </option>
+                                        <option value="flexible" {{ request('shift') == 'flexible' ? 'selected' : '' }}>
+                                            Flexible</option>
+                                        <option value="weekend" {{ request('shift') == 'weekend' ? 'selected' : '' }}>
+                                            Weekend</option>
+                                    </select>
                                 </div>
-                            </form>
-                        </div>
+
+                                <div>
+                                    <label class="form-label mb-1 small">Cari Engineer</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" name="search"
+                                            placeholder="Nama Engineer" value="{{ request('search') }}">
+                                        {{-- <button class="btn btn-success" type="submit">
+                                            <i class="bi bi-search"></i>
+                                        </button> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
-                    {{-- TOMBOL CONFIRM FILTER --}}
                     <div class="col-auto mb-3">
                         <label class="form-label mb-1 small">&nbsp;</label>
-                        <button class="btn btn-primary btn-sm" type="submit" form="searchForm">
-                            <i class="bi bi-check2-circle"></i> Terapkan
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="submit" form="filterForm" class="btn btn-sm btn-primary" title="Filter">
+                                <i class="bi bi-funnel"></i> Cari
+                            </button>
+
+                            <a href="{{ route('engineer.index', $viewInactive ? ['status' => 'inactive'] : []) }}"
+                                class="btn btn-sm btn-outline-danger" title="Reset">
+                                <i class="bi bi-x-circle"></i> Reset
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card shadow-sm mt-4">
@@ -90,7 +103,9 @@
                                             <th>Nama</th>
                                             <th>Shift</th>
                                             <th>Status</th>
-                                            <th>Inactivated At</th>
+                                            @if ($viewInactive)
+                                                <th>Inactivated At</th>
+                                            @endif
                                             <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
@@ -106,7 +121,9 @@
                                                         {{ ucfirst($engineer->status) }}
                                                     </span>
                                                 </td>
-                                                <td>{{ $engineer->inactived_at ?? '-' }}</td>
+                                                @if ($viewInactive)
+                                                    <td>{{ $engineer->inactived_at ?? '-' }}</td>
+                                                @endif
                                                 <td class="text-center">
                                                     {{-- Edit --}}
                                                     <a href="#" class="btn btn-sm btn-link text-primary"
@@ -288,40 +305,5 @@
             </div>
         </div>
     </main>
-    <script>
-        const searchInput = document.getElementById('searchEngineer');
-        const shiftFilter = document.getElementById('shiftFilter');
-        const tableRows = document.querySelectorAll('#engineerTableBody tr');
-        const noResultRow = document.getElementById('noResultRow');
-
-        function filterTable() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedShift = shiftFilter.value.toLowerCase();
-            let hasVisibleRow = false;
-
-            tableRows.forEach(row => {
-                const nameCell = row.getElementsByTagName('td')[1];
-                const shiftCell = row.getElementsByTagName('td')[2];
-
-                if (nameCell && shiftCell) {
-                    const nameText = nameCell.textContent.toLowerCase();
-                    const shiftText = shiftCell.textContent.toLowerCase();
-
-                    const matchesSearch = nameText.includes(searchTerm);
-                    const matchesShift = selectedShift === '' || shiftText === selectedShift;
-
-                    if (matchesSearch && matchesShift) {
-                        row.style.display = '';
-                        hasVisibleRow = true;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                }
-            });
-
-            noResultRow.style.display = hasVisibleRow ? 'none' : '';
-        }
-        searchInput.addEventListener('input', filterTable);
-        shiftFilter.addEventListener('change', filterTable);
-    </script>
+    <script></script>
 @endsection

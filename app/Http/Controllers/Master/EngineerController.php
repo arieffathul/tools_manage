@@ -7,21 +7,39 @@ use App\Http\Requests\Engineer\StoreEngineerRequest;
 use App\Http\Requests\Engineer\UpdateEngineerRequest;
 use App\Models\Engineer;
 use Exception;
+use Illuminate\Http\Request;
 
 class EngineerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Check if we're viewing inactive engineers
-        $viewInactive = request('status') == 'inactive';
+        $viewInactive = $request->get('status') == 'inactive';
 
-        // Get engineers based on toggle
-        $engineers = $viewInactive
-            ? Engineer::where('status', 'inactive')->get()
-            : Engineer::where('status', 'active')->get();
+        // Base query
+        $query = Engineer::query();
+
+        // Filter by status (active/inactive)
+        $query->where('status', $viewInactive ? 'inactive' : 'active');
+
+        // Filter by shift
+        if ($request->filled('shift')) {
+            $query->where('shift', $request->shift);
+        }
+
+        // Search by name
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        // Order by name (A-Z)
+        $query->orderBy('name', 'asc');
+
+        // Paginate with query string
+        $engineers = $query->paginate(10)->withQueryString();
 
         return view('master.engineer.engineer', compact('engineers', 'viewInactive'));
     }
@@ -123,7 +141,7 @@ class EngineerController extends Controller
 
         $engineer->update([
             'status' => 'active',
-            'inactived_at' => null,
+            // 'inactived_at' => null,
         ]);
 
         return back()->with('success', 'Engineer diaktifkan kembali.');
