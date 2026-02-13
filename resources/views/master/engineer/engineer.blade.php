@@ -9,42 +9,51 @@
         <!-- Header -->
         <div class="app-content-header py-4 mb-4 bg-white border-bottom shadow-sm animate-fade-in">
             <div class="container-fluid">
-                <div class="row align-items-center justify-content-between mb-3 g-2">
-                    <h1>Kelola Engineer</h1>
-                    <div class="col-auto d-flex flex-wrap align-items-end gap-3">
-                        {{-- Simple Toggle Button --}}
-                        <div>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a href="{{ route('engineer.index') }}"
-                                    class="btn {{ !$viewInactive ? 'btn-success' : 'btn-outline-success' }}">
-                                    Active
-                                </a>
-                                <a href="{{ route('engineer.index', ['status' => 'inactive']) }}"
-                                    class="btn {{ $viewInactive ? 'btn-secondary' : 'btn-outline-secondary' }}">
-                                    Inactive
-                                </a>
-                            </div>
-                        </div>
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <h1 class="mb-0">Kelola Engineer</h1>
+                    </div>
+                </div>
 
-                        {{-- Filter Shift --}}
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-auto mb-3">
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ route('engineer.index') }}"
+                                class="btn {{ !$viewInactive ? 'btn-success' : 'btn-outline-success' }}">
+                                Active
+                            </a>
+                            <a href="{{ route('engineer.index', ['status' => 'inactive']) }}"
+                                class="btn {{ $viewInactive ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                                Inactive
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-auto mb-3">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEngineerModal">
+                            <i class="bi bi-plus-lg"></i> Tambah Engineer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row justify-content-between align-items-end">
+                    <div class="col-auto d-flex flex-wrap align-items-end gap-3 mb-3 ">
+                        {{-- FILTER SHIFT + SEARCH ENGINEER --}}
                         <div>
                             <label class="form-label mb-1 small">Shift</label>
-                            <select class="form-select form-select-sm" id="shiftFilter">
-                                <option selected value="">Semua Shift</option>
+                            <select class="form-select form-select-sm" style="min-width: 130px;">
+                                <option value="">Semua Shift</option>
                                 <option value="day">Day</option>
                                 <option value="night">Night</option>
                                 <option value="flexible">Flexible</option>
                                 <option value="weekend">Weekend</option>
                             </select>
                         </div>
-
-                        {{-- Search Engineer --}}
                         <div>
                             <label class="form-label mb-1 small">Cari Engineer</label>
-                            <form action="{{ route('engineer.index') }}" method="GET" id="searchForm">
+                            <form action="{{ route('engineer.index') }}" method="GET">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" name="search" placeholder="Nama Engineer"
-                                        id="searchEngineer" value="{{ request('search') }}">
+                                        value="{{ request('search') }}">
                                     @if ($viewInactive)
                                         <input type="hidden" name="status" value="inactive">
                                     @endif
@@ -56,10 +65,11 @@
                         </div>
                     </div>
 
-                    {{-- Tombol Tambah --}}
-                    <div class="col-auto">
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addEngineerModal">
-                            <i class="bi bi-plus-lg"></i> Tambah Engineer
+                    {{-- TOMBOL CONFIRM FILTER --}}
+                    <div class="col-auto mb-3">
+                        <label class="form-label mb-1 small">&nbsp;</label>
+                        <button class="btn btn-primary btn-sm" type="submit" form="searchForm">
+                            <i class="bi bi-check2-circle"></i> Terapkan
                         </button>
                     </div>
                 </div>
