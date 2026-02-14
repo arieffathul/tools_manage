@@ -275,23 +275,23 @@
                                         </option>
                                         <option value="poor"
                                             {{ (isset($brokenTool) && $brokenTool->status == 'poor') || old('status') == 'poor' ? 'selected' : '' }}
-                                            style="font-size: 10px;">
+                                            style="font-size: 14px;">
                                             Poor - Masih bisa dipakai
                                         </option>
                                         <option value="broken"
                                             {{ (isset($brokenTool) && $brokenTool->status == 'broken') || old('status') == 'broken' ? 'selected' : '' }}
-                                            style="font-size: 10px;">
+                                            style="font-size: 14px;">
                                             Broken - Tidak bisa dipakai
                                         </option>
                                         <option value="scrap"
                                             {{ (isset($brokenTool) && $brokenTool->status == 'scrap') || old('status') == 'scrap' ? 'selected' : '' }}
-                                            style="font-size: 10px;">
+                                            style="font-size: 14px;">
                                             Scrap - Tidak bisa diperbaiki
                                         </option>
                                         @if (isset($brokenTool))
                                             <option value="resolved"
                                                 {{ (isset($brokenTool) && $brokenTool->status == 'resolved') || old('status') == 'resolved' ? 'selected' : '' }}
-                                                style="font-size: 10px;">
+                                                style="font-size: 14px;">
                                                 Resolved - Telah diperbaiki
                                             </option>
                                         @endif
@@ -632,8 +632,8 @@
                                 ${tool.image ?
                                     `<img src="/storage/${tool.image}" alt="${tool.name || 'Tool'}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">` :
                                     `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                                                                                                                                                <i class="bi bi-tools text-muted fs-5"></i>
-                                                                                                                                                            </div>`
+                                                                                                                                                                                <i class="bi bi-tools text-muted fs-5"></i>
+                                                                                                                                                                            </div>`
                                 }
                             </div>
                             <div class="flex-grow-1">

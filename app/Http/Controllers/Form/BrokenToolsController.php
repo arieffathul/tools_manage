@@ -10,6 +10,7 @@ use App\Models\Engineer;
 use App\Models\Tool;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 // use Symfony\Component\HttpFoundation\Request;
 
@@ -192,6 +193,9 @@ class BrokenToolsController extends Controller
 
             // Handle image upload if exists
             if ($request->hasFile('image')) {
+                if ($brokenTool->image) {
+                    Storage::disk('public')->delete($brokenTool->image);
+                }
                 $data['image'] = $request->file('image')
                     ->store('broken_tools', 'public');
             }
@@ -204,9 +208,24 @@ class BrokenToolsController extends Controller
                     // Tambah quantity tool sesuai jumlah yang dilaporkan diperbaiki
                     $tool->incrementQuantity($data['quantity']);
                 }
+            } else {
+                $tool = Tool::find($data['tool_id']);
+                if ($tool) {
+                    $tool->incrementQuantity($brokenTool->quantity);
+                    $tool->decrementQuantity($data['quantity']);
+                }
+
             }
 
             DB::commit();
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Laporan berhasil diupdate',
+                    'redirect' => route('forms.complete'),
+                ]);
+            }
 
             return redirect()
                 ->route('forms.complete')
@@ -214,6 +233,13 @@ class BrokenToolsController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
 
             return back()->with('error', $e->getMessage());
         }
