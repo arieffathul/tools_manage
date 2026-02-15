@@ -108,23 +108,25 @@
 
                     <!-- Telat Kembali -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card border-start border-danger border-4 shadow-sm h-100 hover-shadow">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <p class="text-muted mb-2">Tools Rusak</p>
-                                        <h3 class="fw-bold mb-0 text-danger">{{ $stats['broken_tools_count'] }}</h3>
-                                        <small class="text-danger">
-                                            <i class="bi bi-exclamation-triangle"></i>
-                                            {{ $stats['broken_tools_today_count'] }} dilaporkan hari ini
-                                        </small>
-                                    </div>
-                                    <div class="bg-danger bg-opacity-10 p-2 rounded">
-                                        <i class="bi bi-exclamation-circle text-danger fs-4"></i>
+                        <a href="{{ route('broken.index') }}" class="text-decoration-none">
+                            <div class="card border-start border-danger border-4 shadow-sm h-100 hover-shadow">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="text-muted mb-2">Tools Rusak</p>
+                                            <h3 class="fw-bold mb-0 text-danger">{{ $stats['broken_tools_count'] }}</h3>
+                                            <small class="text-danger">
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                                {{ $stats['broken_tools_today_count'] }} dilaporkan hari ini
+                                            </small>
+                                        </div>
+                                        <div class="bg-danger bg-opacity-10 p-2 rounded">
+                                            <i class="bi bi-exclamation-circle text-danger fs-4"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>

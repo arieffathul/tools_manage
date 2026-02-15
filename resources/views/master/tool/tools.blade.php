@@ -233,40 +233,30 @@
                                                                             style="max-height: 100px; display: none;">
                                                                     </div>
                                                                     {{-- Quantity --}}
-                                                                    <div class="row">
-                                                                        <div class="col-md-6 mb-3">
-                                                                            <label for="quantity{{ $tool->id }}"
-                                                                                class="form-label">
-                                                                                Quantity*
-                                                                            </label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="quantity{{ $tool->id }}"
-                                                                                name="quantity"
-                                                                                value="{{ $tool->quantity }}"
-                                                                                min="0" required
-                                                                                oninput="document.getElementById('current_quantity{{ $tool->id }}').max = this.value">
-                                                                        </div>
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <label for="quantity{{ $tool->id }}"
+                                                                            class="form-label">Quantity*</label>
+                                                                        <input type="number" class="form-control"
+                                                                            id="quantity{{ $tool->id }}"
+                                                                            name="quantity" value="{{ $tool->quantity }}"
+                                                                            min="0" required
+                                                                            oninput="updateCurrentQtyMax(this, {{ $tool->id }})">
                                                                     </div>
 
                                                                     {{-- Current Quantity --}}
-                                                                    <div class="row">
-                                                                        <div class="col-md-6 mb-3">
-                                                                            <label
-                                                                                for="current_quantity{{ $tool->id }}"
-                                                                                class="form-label">
-                                                                                Current Quantity*
-                                                                            </label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="current_quantity{{ $tool->id }}"
-                                                                                name="current_quantity"
-                                                                                value="{{ $tool->current_quantity }}"
-                                                                                min="0"
-                                                                                max="{{ $tool->quantity }}" required>
-                                                                            <small class="text-muted"
-                                                                                id="max-hint-{{ $tool->id }}">
-                                                                                Maksimal {{ $tool->quantity }}
-                                                                            </small>
-                                                                        </div>
+                                                                    <div class="col-md-6 mb-3">
+                                                                        <label for="current_quantity{{ $tool->id }}"
+                                                                            class="form-label">Current Quantity*</label>
+                                                                        <input type="number" class="form-control"
+                                                                            id="current_quantity{{ $tool->id }}"
+                                                                            name="current_quantity"
+                                                                            value="{{ $tool->current_quantity }}"
+                                                                            min="0" max="{{ $tool->quantity }}"
+                                                                            required>
+                                                                        <small class="text-muted"
+                                                                            id="max-hint-{{ $tool->id }}">
+                                                                            Maksimal {{ $tool->quantity }}
+                                                                        </small>
                                                                     </div>
                                                                     {{-- Locator --}}
                                                                     <div class="row">
@@ -425,10 +415,21 @@
             @endforeach
         });
 
-        document.getElementById('quantity{{ $tool->id }}').addEventListener('input', function() {
-            let maxQty = this.value;
-            let hintEl = document.getElementById('max-hint-{{ $tool->id }}');
+        function updateCurrentQtyMax(qtyInput, toolId) {
+            const maxQty = parseInt(qtyInput.value) || 0;
+            const currentQtyInput = document.getElementById('current_quantity' + toolId);
+            const hintEl = document.getElementById('max-hint-' + toolId);
+
+            // Update max attribute
+            currentQtyInput.max = maxQty;
+
+            // Update hint text
             hintEl.innerText = 'Maksimal ' + maxQty;
-        });
+
+            // If current value > new max, turunkan otomatis
+            if (parseInt(currentQtyInput.value) > maxQty) {
+                currentQtyInput.value = maxQty;
+            }
+        }
     </script>
 @endsection
