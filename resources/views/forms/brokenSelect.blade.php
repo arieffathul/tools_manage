@@ -24,10 +24,84 @@
                         <p class="text-muted mb-0 small">Pilih data laporan alat rusak untuk diperbarui</p>
                     </div>
                 </div>
-                <div class="mb-2 d-flex justify-content-end">
-                    <a href="{{ route('broken.form') }}" class="btn btn-primary btn-sm">
-                        <i class="bi bi-plus-circle me-1"></i> Buat Laporan Baru
-                    </a>
+                {{-- FILTER SECTION --}}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <form action="{{ route('broken.select') }}" method="GET" id="filterForm"
+                            class="card shadow-sm p-3">
+                            <div class="row g-3">
+                                {{-- FILTER REPORTER (SEARCH & SELECT) --}}
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small fw-semibold">Filter Pelapor</label>
+                                    <div class="position-relative">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control pe-5" name="reporter_search"
+                                                id="engineerSearch" placeholder="Cari nama pelapor..."
+                                                autocomplete="off" value="{{ request('reporter_search') }}">
+
+                                            <input type="hidden" name="reporter_id" id="engineerId"
+                                                value="{{ request('reporter_id') }}">
+
+                                            <button type="button"
+                                                class="btn btn-outline-secondary search-clear-btn position-absolute end-0 h-100"
+                                                style="display: none; border: 1px solid #ced4da; border-left: none; z-index: 5; background: white;">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </div>
+                                        <div class="position-absolute w-100 bg-white border border-top-0 rounded-bottom shadow-sm"
+                                            style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none; margin-top: -1px;"
+                                            id="engineer-results"></div>
+                                    </div>
+                                </div>
+
+                                {{-- FILTER TOOL (SEARCH & SELECT) --}}
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small fw-semibold">Filter Tool</label>
+                                    <div class="position-relative">
+                                        <div class="input-group input-group-sm">
+                                            <input type="text" class="form-control pe-5" name="tool_search"
+                                                id="toolSearch" placeholder="Cari nama atau kode tool..."
+                                                autocomplete="off" value="{{ request('tool_search') }}">
+
+                                            <input type="hidden" name="tool_id" id="toolId"
+                                                value="{{ request('tool_id') }}">
+
+                                            <button type="button"
+                                                class="btn btn-outline-secondary search-clear-btn position-absolute end-0 h-100"
+                                                style="display: none; border: 1px solid #ced4da; border-left: none; z-index: 5; background: white;">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </div>
+                                        <div class="position-absolute w-100 bg-white border border-top-0 rounded-bottom shadow-sm"
+                                            style="z-index: 1050; max-height: 200px; overflow-y: auto; display: none; margin-top: -1px;"
+                                            id="tool-results"></div>
+                                    </div>
+                                </div>
+
+                                {{-- TOMBOL AKSI --}}
+                                <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                                        <i class="bi bi-funnel me-1"></i> Filter
+                                    </button>
+                                    @if (request('reporter_id') || request('tool_id') || request('reporter_search') || request('tool_search'))
+                                        <a href="{{ route('broken.select') }}"
+                                            class="btn btn-outline-danger btn-sm px-3">
+                                            <i class="bi bi-x-circle me-1"></i> Reset
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- TOMBOL BUAT LAPORAN BARU --}}
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-end">
+                        <a href="{{ route('broken.form') }}" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Buat Laporan Baru
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -211,6 +285,187 @@
                 toast.show();
             }
         });
+        // Data dari PHP
+        const allEngineers = @json($engineers);
+        const allTools = @json($tools);
+
+        // ==================== ENGINEER SEARCH ====================
+        const engineerSearch = document.getElementById('engineerSearch');
+        const engineerIdInput = document.getElementById('engineerId');
+        const engineerResults = document.getElementById('engineer-results');
+        const engineerContainer = engineerSearch.closest('.input-group');
+        const engineerClearBtn = engineerContainer.querySelector('.search-clear-btn');
+
+        // ==================== TOOL SEARCH ====================
+        const toolSearch = document.getElementById('toolSearch');
+        const toolIdInput = document.getElementById('toolId');
+        const toolResults = document.getElementById('tool-results');
+        const toolContainer = toolSearch.closest('.input-group');
+        const toolClearBtn = toolContainer.querySelector('.search-clear-btn');
+
+        // ==================== SET INITIAL VALUES ====================
+        if (engineerIdInput.value) {
+            const engineer = allEngineers.find(e => e.id == engineerIdInput.value);
+            if (engineer) {
+                engineerSearch.value = engineer.name;
+                engineerClearBtn.style.display = 'block';
+            }
+        }
+
+        if (toolIdInput.value) {
+            const tool = allTools.find(t => t.id == toolIdInput.value);
+            if (tool) {
+                toolSearch.value = tool.name;
+                toolClearBtn.style.display = 'block';
+            }
+        }
+
+        // ==================== ENGINEER SEARCH FUNCTION ====================
+        function searchEngineers(query) {
+            query = query.toLowerCase().trim();
+            if (query.length < 1) return [];
+            return allEngineers
+                .filter(engineer => engineer.name.toLowerCase().includes(query))
+                .slice(0, 5);
+        }
+
+        function showEngineerResults(query) {
+            const results = searchEngineers(query);
+            engineerResults.innerHTML = '';
+
+            if (results.length === 0) {
+                if (query.length >= 1) {
+                    engineerResults.innerHTML =
+                        '<div class="search-select-result no-results">Tidak ditemukan</div>';
+                }
+            } else {
+                results.forEach(engineer => {
+                    const div = document.createElement('div');
+                    div.className = 'search-select-result';
+                    if (engineer.id == engineerIdInput.value) div.classList.add('selected');
+                    div.textContent = engineer.name;
+                    div.dataset.id = engineer.id;
+                    div.dataset.name = engineer.name;
+
+                    div.addEventListener('click', function() {
+                        engineerSearch.value = this.dataset.name;
+                        engineerIdInput.value = this.dataset.id;
+                        engineerResults.style.display = 'none';
+                        engineerClearBtn.style.display = 'block';
+                        // Auto submit form
+                        document.getElementById('filterForm').submit();
+                    });
+
+                    engineerResults.appendChild(div);
+                });
+            }
+
+            const shouldShow = results.length > 0 || (query.length >= 1 && results.length === 0);
+            engineerResults.style.display = shouldShow ? 'block' : 'none';
+        }
+
+        // ==================== TOOL SEARCH FUNCTION ====================
+        function searchTools(query) {
+            query = query.toLowerCase().trim();
+            if (query.length < 1) return [];
+            return allTools
+                .filter(tool =>
+                    tool.name.toLowerCase().includes(query) ||
+                    (tool.code && tool.code.toLowerCase().includes(query)) ||
+                    (tool.description && tool.description.toLowerCase().includes(query))
+                )
+                .slice(0, 5);
+        }
+
+        function showToolResults(query) {
+            const results = searchTools(query);
+            toolResults.innerHTML = '';
+
+            if (results.length === 0) {
+                if (query.length >= 1) {
+                    toolResults.innerHTML =
+                        '<div class="search-select-result no-results">Tidak ditemukan</div>';
+                }
+            } else {
+                results.forEach(tool => {
+                    const div = document.createElement('div');
+                    div.className = 'search-select-result tool-result';
+                    if (tool.id == toolIdInput.value) div.classList.add('selected');
+                    div.innerHTML = `
+                    <div class="tool-name">${tool.name}</div>
+                    <div class="tool-description">${tool.code || ''} ${tool.description ? ' - ' + tool.description : ''}</div>
+                `;
+                    div.dataset.id = tool.id;
+                    div.dataset.name = tool.name;
+
+                    div.addEventListener('click', function() {
+                        toolSearch.value = this.dataset.name;
+                        toolIdInput.value = this.dataset.id;
+                        toolResults.style.display = 'none';
+                        toolClearBtn.style.display = 'block';
+                        // Auto submit form
+                        document.getElementById('filterForm').submit();
+                    });
+
+                    toolResults.appendChild(div);
+                });
+            }
+
+            const shouldShow = results.length > 0 || (query.length >= 1 && results.length === 0);
+            toolResults.style.display = shouldShow ? 'block' : 'none';
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        engineerSearch.addEventListener('input', function(e) {
+            const query = e.target.value.trim();
+            showEngineerResults(query);
+            engineerClearBtn.style.display = query || engineerIdInput.value ? 'block' : 'none';
+            if (!query && !engineerIdInput.value) engineerIdInput.value = '';
+        });
+
+        engineerSearch.addEventListener('focus', function() {
+            if (this.value.trim() === '') showEngineerResults('');
+        });
+
+        engineerClearBtn.addEventListener('click', function() {
+            engineerSearch.value = '';
+            engineerIdInput.value = '';
+            engineerResults.style.display = 'none';
+            this.style.display = 'none';
+            document.getElementById('filterForm').submit();
+        });
+
+        toolSearch.addEventListener('input', function(e) {
+            const query = e.target.value.trim();
+            showToolResults(query);
+            toolClearBtn.style.display = query || toolIdInput.value ? 'block' : 'none';
+            if (!query && !toolIdInput.value) toolIdInput.value = '';
+        });
+
+        toolSearch.addEventListener('focus', function() {
+            if (this.value.trim() === '') showToolResults('');
+        });
+
+        toolClearBtn.addEventListener('click', function() {
+            toolSearch.value = '';
+            toolIdInput.value = '';
+            toolResults.style.display = 'none';
+            this.style.display = 'none';
+            document.getElementById('filterForm').submit();
+        });
+
+        // Hide results when clicking outside
+        document.addEventListener('click', function(e) {
+            const engineerContainer = engineerSearch.closest('.position-relative');
+            const toolContainer = toolSearch.closest('.position-relative');
+
+            if (!engineerContainer.contains(e.target)) engineerResults.style.display = 'none';
+            if (!toolContainer.contains(e.target)) toolResults.style.display = 'none';
+        });
+
+        // Initial clear button visibility
+        if (!engineerSearch.value && !engineerIdInput.value) engineerClearBtn.style.display = 'none';
+        if (!toolSearch.value && !toolIdInput.value) toolClearBtn.style.display = 'none';
     </script>
 </body>
 
