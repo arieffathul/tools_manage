@@ -291,8 +291,39 @@
                                             @endforeach
                                         </tbody>
                                     </table>
+                                    <div class="text-muted small d-flex justify-content-end mt-2">
+                                        Menampilkan {{ $tools->firstItem() ?? 0 }} - {{ $tools->lastItem() ?? 0 }}
+                                        dari {{ $tools->total() }} tools
+                                    </div>
                                     <div class="d-flex justify-content-end mt-4">
-                                        {{ $tools->links() }}
+                                        <nav aria-label="Page navigation">
+                                            <ul class="pagination pagination-sm mb-0">
+                                                {{-- Previous --}}
+                                                <li class="page-item {{ $tools->onFirstPage() ? 'disabled' : '' }}">
+                                                    <a class="page-link" href="{{ $tools->previousPageUrl() }}"
+                                                        aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                    </a>
+                                                </li>
+
+                                                {{-- Pages --}}
+                                                @foreach ($tools->getUrlRange(1, $tools->lastPage()) as $page => $url)
+                                                    <li
+                                                        class="page-item {{ $page == $tools->currentPage() ? 'active' : '' }}">
+                                                        <a class="page-link"
+                                                            href="{{ $url }}">{{ $page }}</a>
+                                                    </li>
+                                                @endforeach
+
+                                                {{-- Next --}}
+                                                <li class="page-item {{ !$tools->hasMorePages() ? 'disabled' : '' }}">
+                                                    <a class="page-link" href="{{ $tools->nextPageUrl() }}"
+                                                        aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>

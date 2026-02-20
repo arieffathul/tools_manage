@@ -260,6 +260,40 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div class="text-muted small d-flex justify-content-end mt-2">
+                                    Menampilkan {{ $engineers->firstItem() ?? 0 }} - {{ $engineers->lastItem() ?? 0 }}
+                                    dari {{ $engineers->total() }} engineer
+                                </div>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination pagination-sm mb-0">
+                                            {{-- Previous --}}
+                                            <li class="page-item {{ $engineers->onFirstPage() ? 'disabled' : '' }}">
+                                                <a class="page-link" href="{{ $engineers->previousPageUrl() }}"
+                                                    aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+
+                                            {{-- Pages --}}
+                                            @foreach ($engineers->getUrlRange(1, $engineers->lastPage()) as $page => $url)
+                                                <li
+                                                    class="page-item {{ $page == $engineers->currentPage() ? 'active' : '' }}">
+                                                    <a class="page-link"
+                                                        href="{{ $url }}">{{ $page }}</a>
+                                                </li>
+                                            @endforeach
+
+                                            {{-- Next --}}
+                                            <li class="page-item {{ !$engineers->hasMorePages() ? 'disabled' : '' }}">
+                                                <a class="page-link" href="{{ $engineers->nextPageUrl() }}"
+                                                    aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
                             </div>
                         @endif
                     </div>
