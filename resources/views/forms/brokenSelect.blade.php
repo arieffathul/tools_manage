@@ -280,6 +280,79 @@
                 </div>
             @endforelse
         </div>
+        <!-- PAGINATION SECTION -->
+        @if ($brokenTools->hasPages())
+            <div class="row mt-4">
+                <div class="col-12">
+                    {{-- Info Total Data --}}
+                    <div class="text-muted small text-center text-md-end mb-2">
+                        Menampilkan {{ $brokenTools->firstItem() ?? 0 }} - {{ $brokenTools->lastItem() ?? 0 }}
+                        dari {{ $brokenTools->total() }} laporan
+                    </div>
+
+                    {{-- Pagination Links (Responsive) --}}
+                    <div class="d-flex justify-content-center justify-content-md-end">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm flex-wrap flex-md-nowrap mb-0">
+                                {{-- Previous --}}
+                                <li class="page-item {{ $brokenTools->onFirstPage() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $brokenTools->previousPageUrl() }}"
+                                        aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                {{-- Pages --}}
+                                @foreach ($brokenTools->getUrlRange(1, $brokenTools->lastPage()) as $page => $url)
+                                    @if ($page >= $brokenTools->currentPage() - 2 && $page <= $brokenTools->currentPage() + 2)
+                                        <li
+                                            class="page-item {{ $page == $brokenTools->currentPage() ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @elseif ($page == 1 || $page == $brokenTools->lastPage())
+                                        @php
+                                            $showPrevDots = $page == 1 && $brokenTools->currentPage() > 3;
+                                            $showNextDots =
+                                                $page == $brokenTools->lastPage() &&
+                                                $brokenTools->currentPage() < $brokenTools->lastPage() - 2;
+                                        @endphp
+
+                                        @if ($showPrevDots || $showNextDots)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+
+                                        <li
+                                            class="page-item {{ $page == $brokenTools->currentPage() ? 'active' : '' }}">
+                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                        </li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next --}}
+                                <li class="page-item {{ !$brokenTools->hasMorePages() ? 'disabled' : '' }}">
+                                    <a class="page-link" href="{{ $brokenTools->nextPageUrl() }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        @else
+            {{-- Kalau cuma 1 halaman, tetap tampilkan total --}}
+            @if ($brokenTools->total() > 0)
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="text-muted small text-center text-md-end">
+                            Menampilkan {{ $brokenTools->total() }} laporan
+                        </div>
+                    </div>
+                </div>
+            @endif
+        @endif
 
         <!-- Pagination (if needed) -->
         {{-- @if ($brokenTools->hasPages())
