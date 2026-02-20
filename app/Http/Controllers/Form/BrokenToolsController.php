@@ -85,17 +85,6 @@ class BrokenToolsController extends Controller
     public function select(Request $request)
     {
         $query = BrokenTool::with(['tool', 'reporter', 'handler']);
-        // ->whereNot('status', 'resolved')
-        // ->latest()
-        // ->get();
-        // if ($request->filled('search')) {
-        //     $search = $request->search;
-        //     $query->where(function ($q) use ($search) {
-        //         $q->where('reporter', function ($q) use ($search){
-        //             $q->where('name', 'like', "%{$search}%");
-        //         });
-        //     });
-        // }
 
         // Filter reporter
         if ($request->filled('reporter_id')) {
@@ -107,7 +96,7 @@ class BrokenToolsController extends Controller
             $query->where('tool_id', $request->tool_id);
         }
 
-        $brokenTools = $query->whereNot('status', 'resolved')->paginate(10);
+        $brokenTools = $query->whereNot('status', 'resolved')->latest()->paginate(10);
 
         $engineers = Engineer::where('status', 'active')->get();
         $tools = Tool::all();

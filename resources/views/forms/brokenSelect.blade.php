@@ -10,6 +10,44 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
+<style>
+    #engineer-results,
+    #tool-results {
+        border-color: #86b7fe !important;
+    }
+
+    .search-select-result {
+        padding: 6px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid #f8f9fa;
+        font-size: 0.875rem;
+    }
+
+    .search-select-result:hover {
+        background-color: #f8f9fa;
+    }
+
+    .search-select-result.selected {
+        background-color: #e7f3ff;
+    }
+
+    .search-select-result:last-child {
+        border-bottom: none;
+    }
+
+    .tool-name {
+        font-weight: 500;
+    }
+
+    .tool-description {
+        font-size: 0.75rem;
+        color: #6c757d;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
 <body class="bg-light">
     <div class="container py-3">
         <div class="row justify-content-center">
@@ -32,11 +70,11 @@
                             <div class="row g-3">
                                 {{-- FILTER REPORTER (SEARCH & SELECT) --}}
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-semibold">Filter Pelapor</label>
+                                    <label class="form-label small fw-semibold">Nama Pelapor</label>
                                     <div class="position-relative">
                                         <div class="input-group input-group-sm">
                                             <input type="text" class="form-control pe-5" name="reporter_search"
-                                                id="engineerSearch" placeholder="Cari nama pelapor..."
+                                                id="engineerSearch" placeholder="Cari engineer pelapor..."
                                                 autocomplete="off" value="{{ request('reporter_search') }}">
 
                                             <input type="hidden" name="reporter_id" id="engineerId"
@@ -56,11 +94,11 @@
 
                                 {{-- FILTER TOOL (SEARCH & SELECT) --}}
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-semibold">Filter Tool</label>
+                                    <label class="form-label small fw-semibold">Nama Tool</label>
                                     <div class="position-relative">
                                         <div class="input-group input-group-sm">
                                             <input type="text" class="form-control pe-5" name="tool_search"
-                                                id="toolSearch" placeholder="Cari nama atau kode tool..."
+                                                id="toolSearch" placeholder="Cari nama atau deskripsi tool..."
                                                 autocomplete="off" value="{{ request('tool_search') }}">
 
                                             <input type="hidden" name="tool_id" id="toolId"
@@ -352,8 +390,6 @@
                         engineerIdInput.value = this.dataset.id;
                         engineerResults.style.display = 'none';
                         engineerClearBtn.style.display = 'block';
-                        // Auto submit form
-                        document.getElementById('filterForm').submit();
                     });
 
                     engineerResults.appendChild(div);
@@ -393,7 +429,7 @@
                     if (tool.id == toolIdInput.value) div.classList.add('selected');
                     div.innerHTML = `
                     <div class="tool-name">${tool.name}</div>
-                    <div class="tool-description">${tool.code || ''} ${tool.description ? ' - ' + tool.description : ''}</div>
+                    <div class="tool-description">${tool.description || '-'}</div>
                 `;
                     div.dataset.id = tool.id;
                     div.dataset.name = tool.name;
@@ -403,8 +439,7 @@
                         toolIdInput.value = this.dataset.id;
                         toolResults.style.display = 'none';
                         toolClearBtn.style.display = 'block';
-                        // Auto submit form
-                        document.getElementById('filterForm').submit();
+
                     });
 
                     toolResults.appendChild(div);
