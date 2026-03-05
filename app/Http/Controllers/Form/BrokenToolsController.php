@@ -28,7 +28,7 @@ class BrokenToolsController extends Controller
         if ($viewResolved) {
             $query->where('status', 'resolved');
         } else {
-            $query->whereIn('status', ['poor', 'broken', 'scrap']);
+            $query->whereNot('status', 'resolved');
         }
 
         // ========== FILTER STATUS (HANYA UNTUK ONGOING) ==========
@@ -82,13 +82,26 @@ class BrokenToolsController extends Controller
         ));
     }
 
-    public function select()
+    public function select(Request $request)
     {
-        $brokenTools = BrokenTool::with(['tool', 'reporter', 'handler'])
-            ->whereNot('status', 'resolved')
-            ->get();
+        $query = BrokenTool::with(['tool', 'reporter', 'handler']);
 
-        return view('forms.brokenSelect', compact('brokenTools'));
+        // Filter reporter
+        if ($request->filled('reporter_id')) {
+            $query->where('reported_by', $request->reporter_id);
+        }
+
+        // filter tools
+        if ($request->filled('tool_id')) {
+            $query->where('tool_id', $request->tool_id);
+        }
+
+        $brokenTools = $query->whereNot('status', 'resolved')->latest()->paginate(10);
+
+        $engineers = Engineer::where('status', 'active')->get();
+        $tools = Tool::all();
+
+        return view('forms.brokenSelect', compact('brokenTools', 'engineers', 'tools'));
     }
 
     /**

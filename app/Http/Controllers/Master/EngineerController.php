@@ -39,7 +39,7 @@ class EngineerController extends Controller
         $query->orderBy('name', 'asc');
 
         // Paginate with query string
-        $engineers = $query->paginate(10)->withQueryString();
+        $engineers = $query->paginate(20)->withQueryString();
 
         return view('master.engineer.engineer', compact('engineers', 'viewInactive'));
     }
